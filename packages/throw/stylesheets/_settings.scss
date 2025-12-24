@@ -1,0 +1,38 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///          This file is part of alapnian sass throw.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "sass:meta";
+
+
+/// 
+/// Toggle strict mode, in which script will throw when not able to cast a value
+/// into a certain type (mostly color and number). In non-strict mode, it will
+/// return the default value from the given type.
+/// 
+/// @type   Boolean
+/// 
+/// @group  settings
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+$strict-mode: true !default;
+
+@if (meta.type-of($strict-mode) != "bool") {
+    @error '$strict-mode: `#{$strict-mode}` is not a boolean.';
+}
