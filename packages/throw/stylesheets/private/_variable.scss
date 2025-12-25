@@ -1,0 +1,72 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///          This file is part of alapnian sass throw.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/meta";
+@use "../../helpers/map";
+@use "internal/join";
+@use "internal/utils";
+@use "internal/messages";
+@use "../settings";
+
+
+/// 
+/// An error message stating an issue with one or more variables.
+/// When the `$strict-mode` parameter (or global `$strict-mode` setting) is set, the mixin will output errors as comments without stopping compilation.
+/// 
+/// @param  {String}    $message                    - The message which describes the issue.
+/// @param  {ArgList}   $names                      - The names of the variables for which there is an issue.
+/// @param  {Boolean}   $strict-mode [%derived%]    - Optionally catch errors and output them as CSS comments without stopping compilation.
+/// 
+/// @output A string describing the reason one or more variables are misconfigured.
+/// 
+/// @group  alapnian-sass-throw
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Boolean}   settings.$strict-mode
+/// @require    {Function}  meta.type-of
+/// @require    {Function}  meta.keywords
+/// @require    {Function}  map.get
+/// @require    {Function}  map.has-key
+/// @require    {Function}  join.join
+/// @require    {Function}  utils.prefix
+/// @require    {Mixin}     messages.message
+/// 
+@mixin variable($message, $names...) {
+    $names: join.join($names, ", $");
+
+    $keywords: meta.keywords($names);
+
+    $catch: settings.$strict-mode;
+    @if (map.has-key($keywords, "strict-mode")) {
+        $_catch: map.get($keywords, "strict-mode");
+        @if (meta.type-of($_catch) == "bool") {
+            $catch: $_catch;
+        }
+    }
+    
+    @if ($catch) {
+        @error $message;
+    } @else {
+        @warn $message;
+    
+        @include messages.message(utils.prefix($names), 'comments');
+        @include messages.message($message, 'comments', $comment-padding: 2);
+    }
+}
