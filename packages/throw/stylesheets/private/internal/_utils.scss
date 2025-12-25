@@ -1,0 +1,66 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///          This file is part of alapnian sass throw.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../../helpers/list";
+
+
+///
+/// Returns the delimiter to use when joining the items of the specified list.
+///
+/// @param  {List}      $list   - The list for which to determine a delimiter.
+/// @return {String}    - A string of the $list separator.
+/// 
+/// @group  alapnian-sass-throw/internal
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  list.separator
+/// 
+@function delimiter($list) {
+    $separator: list.separator($list);
+
+    @if ($separator == "space") {
+        @return " ";
+    }
+
+    @if ($separator == "comma") {
+        @return ", ";
+    }
+
+    @return " / ";
+}
+
+/// 
+/// Format an error prefix, with source if available.
+/// 
+/// @param  {String}    $source - The source of the error.
+/// @return {String}    - An error prefix string.
+/// 
+/// @group  alapnian-sass-throw/internal
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+@function prefix($source) {
+    @if ($source) {
+        @return "ERROR [#{$source}]:";
+    }
+
+    @return "ERROR:";
+}
