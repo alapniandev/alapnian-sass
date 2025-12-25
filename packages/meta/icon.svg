@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="AlapnianSassMetaModuleIcon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 128 128">
+  <!-- Alapnian Sass Meta Module Icon | Copyright (c) 2025 Alapnian | https://alapnian.com | sassdev@alapnian.com -->
+  <defs>
+    <linearGradient id="linear-gradient" x1="64" y1="127.32" x2="64" y2=".68" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#b9497b"/>
+      <stop offset="1" stop-color="#cd6799"/>
+    </linearGradient>
+  </defs>
+  <title>Alapnian Sass Meta Module Icon</title>
+  <rect x=".54" y=".68" width="126.92" height="126.65" rx="27" ry="27" style="fill: url(#linear-gradient);"/>
+  <g>
+    <path d="M78.28,41.87l-6.21-6.21c-4.43-4.43-11.72-4.43-16.15,0l-6.21,6.21c-1.23,1.23-1.23,3.26,0,4.5l12.06,12.06c1.23,1.23,3.23,1.23,4.46,0l12.06-12.06c1.2-1.23,1.2-3.26-.03-4.5Z" style="fill: #f8ebf2;"/>
+    <path d="M41.87,49.73l-6.21,6.21c-4.43,4.43-4.43,11.72,0,16.15l6.21,6.21c1.23,1.23,3.23,1.23,4.46,0l12.06-12.06c1.23-1.23,1.23-3.23,0-4.46l-12.03-12.03c-1.23-1.23-3.26-1.23-4.5,0Z" style="fill: #f8ebf2;"/>
+    <path d="M92.34,55.93l-6.21-6.21c-1.23-1.23-3.23-1.23-4.46,0l-12.06,12.06c-1.23,1.23-1.23,3.23,0,4.46l12.06,12.06c1.23,1.23,3.23,1.23,4.46,0l6.21-6.21c4.43-4.46,4.43-11.75,0-16.18Z" style="fill: #f8ebf2;"/>
+    <path d="M49.72,86.13l6.21,6.21c4.43,4.43,11.72,4.43,16.15,0l6.21-6.21c1.23-1.23,1.23-3.23,0-4.46l-12.06-12.06c-1.23-1.23-3.23-1.23-4.46,0l-12.06,12.06c-1.2,1.2-1.2,3.23.03,4.46Z" style="fill: #f8ebf2;"/>
+  </g>
+</svg>
