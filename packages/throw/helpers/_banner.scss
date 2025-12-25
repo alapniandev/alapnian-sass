@@ -1,0 +1,44 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///          This file is part of alapnian sass throw.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+/// 
+/// Compressed throw module banner.
+/// 
+/// @output A comment string for the compressed throw module banner.
+/// 
+/// @group  helpers
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+@mixin compressed-mode() {
+    /*! Alapnian Sass Throw v0.0.0 | Copyright (c) 2025 Alapnian | https://alapnian.com */
+}
+
+/// 
+/// Uncompressed throw module banner.
+/// 
+/// @output A comment string for the uncompressed throw module banner.
+/// 
+/// @group  helpers
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+///
+@mixin uncompressed-mode() {
+    /* Alapnian Sass Throw v0.0.0 | Copyright (c) 2025 Alapnian | https://alapnian.com */
+}
