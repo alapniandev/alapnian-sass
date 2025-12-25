@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="AlapnianSassStringModuleIcon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 128 128">
+  <!-- Alapnian Sass String Module Icon | Copyright (c) 2025 Alapnian | https://alapnian.com | sassdev@alapnian.com -->
+  <defs>
+    <linearGradient id="linear-gradient" x1="64.22" y1="127.32" x2="64.22" y2=".68" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#b9497b"/>
+      <stop offset="1" stop-color="#cd6799"/>
+    </linearGradient>
+  </defs>
+  <title>Alapnian Sass String Module Icon</title>
+  <rect x=".76" y=".68" width="126.92" height="126.65" rx="27" ry="27" style="fill: url(#linear-gradient);"/>
+  <path d="M95.51,49.43c0,1.93-1.6,3.53-3.53,3.53s-3.53-1.6-3.53-3.53v-5.55c0-1.5-1.22-2.73-2.73-2.73h-18.43v45.69h8.37c1.93,0,3.53,1.6,3.53,3.53s-1.6,3.53-3.53,3.53h-23.79c-1.93,0-3.53-1.6-3.53-3.53s1.6-3.53,3.53-3.53h8.37v-45.69h-18.43c-1.5,0-2.73,1.22-2.73,2.73v5.55c0,1.93-1.6,3.53-3.53,3.53s-3.53-1.6-3.53-3.53v-5.55c0-5.41,4.37-9.78,9.78-9.78h43.86c5.41,0,9.78,4.37,9.78,9.78v5.55h.05Z" style="fill: #f8ebf2;"/>
+</svg>
