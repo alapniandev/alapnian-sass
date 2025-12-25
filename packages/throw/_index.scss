@@ -1,0 +1,31 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///          This file is part of alapnian sass throw.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load modules
+@use "helpers/banner";
+
+
+// Show banner
+@include banner.uncompressed-mode();
+
+
+// Forward throw module
+@forward "stylesheets/settings";
+@forward "stylesheets/public/variable"          hide throw-variable;
+@forward "stylesheets/public/variable-type"     hide throw-variable-type;
+@forward "stylesheets/public/parameter"         hide throw-parameter;
+@forward "stylesheets/public/parameter-type"    hide throw-parameter-type;
