@@ -1,0 +1,107 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///          This file is part of alapnian sass throw.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../../helpers/meta";
+@use "../../../helpers/list";
+@use "../../../helpers/string";
+@use "join";
+
+
+/// 
+/// Output a message to CSS comments or command line terminal (via debug/warn).
+/// 
+/// @param  {String}                                        $message                - Message to output.
+/// @param  {"comments" | "warn" | "debug" | "terminal" }   $output ["comments"]    - Type of output.
+/// @param  {Number}                                        $comment-padding [0]    - Padding of comment output.
+/// 
+/// @output A message to CSS comments or command line terminal (via debug/warn).
+/// 
+/// @group  alapnian-sass-throw/internal
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  list.index
+/// 
+@mixin message($message, $output: "comments", $comment-padding: 0) {
+    $pad: "";
+
+    @if ($comment-padding > 0) {
+        @for $i from 0 to $comment-padding {
+            $pad: $pad + " ";
+        }
+    }
+
+    @each $line in $message {
+        @if (list.index($output, "comments")) {
+            // sass-lint:disable-line no-empty-rulesets
+
+            /* #{$pad + $line} */ // sass-lint:disable-line no-css-comments
+        }
+
+        @if (list.index($output, "debug") or list.index($output, "terminal")) {
+            @debug $line; // sass-lint:disable-line no-debug
+        }
+
+        @if (list.index($output, "warn")) {
+            @warn $line;
+        }
+    }
+}
+
+///
+/// Returns a string stating the specified value is invalid for the given types.
+///
+/// @param  {List}      $types                      - The types which are expected.
+/// @param  {*}         $value                      - The value which was received.
+/// @param  {String}    $additional-message [null]  - The additional message which describes the issue.
+/// @return {String}    - A string stating the specified value is invalid for the given types.
+/// 
+/// @group  alapnian-sass-throw/internal
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  meta.inspect
+/// @require    {Function}  list.length
+/// @require    {Function}  list.nth
+/// @require    {Function}  list.set-nth
+/// @require    {Function}  string.unquote
+/// @require    {Function}  join.join
+///
+@function invalid-type($types, $value, $additional-message: null) {
+    $length: list.length($types);
+
+    @if ($length > 1) {
+        $types: list.set-nth($types, $length, "or #{list.nth($types, $length)}");
+    }
+
+    $glue: " ";
+    @if ($length > 2) {
+        $glue: ", ";
+    }
+
+    $types: join.join($types, $glue);
+    $message: "`#{meta.inspect($value)}` is not a #{string.unquote($types)}";
+
+    @if ($additional-message) {
+        $message: "#{$message}. #{string.unquote($additional-message)}";
+    }
+
+    @return $message;
+}
