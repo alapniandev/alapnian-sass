@@ -13,8 +13,8 @@
 </p>
 
 <p align="center">
-    <a href="">Pacakages</a>&nbsp;&middot;
-    <a href="https://module.alapnian.com/sass/">Docs</a>
+    <a href="#packages">Pacakages</a>&nbsp;&middot;
+    <a target="_blank" href="https://module.alapnian.com/sass/">Docs</a>
 </p>
 
 <h2>Packages</h2>
