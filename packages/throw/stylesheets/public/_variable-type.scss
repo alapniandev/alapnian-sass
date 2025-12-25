@@ -1,0 +1,127 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///          This file is part of alapnian sass throw.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/meta";
+@use "../../helpers/map";
+@use "../private/parameter-type";
+@use "../private/variable-type" as private;
+@use "../settings";
+
+
+/// 
+/// An error message stating a variable received the wrong type.
+/// When the `$strict-mode` parameter (or global `$strict-mode` setting) is set, the mixin will output errors as comments without stopping compilation.
+/// 
+/// @alias throw-variable-type
+/// 
+/// @param  {String}    $name                       - The name of the variable which has received the wrong type.
+/// @param  {*}         $value                      - The value which was received.
+/// @param  {ArgList}   $types                      - The types which are expected.
+/// @param  {String}    $message [null]             - The additional message which describes the issue. Must be passed by name.
+/// @param  {Boolean}   $strict-mode [%derived%]    - Optionally catch errors and output them as CSS comments without stopping compilation.
+/// 
+/// @output A string describing what types are acceptable for a variable and the value that is misconfigured.
+/// 
+/// @group  api
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Boolean}   settings.$strict-mode
+/// @require    {Function}  meta.keywords
+/// @require    {Function}  meta.type-of
+/// @require    {Function}  map.has-key
+/// @require    {Function}  map.get
+/// @require    {Mixin}     parameter-type.parameter-type
+/// @require    {Mixin}     private.variable-type
+/// 
+@mixin variable-type($name, $value, $types...) {
+    $keywords: meta.keywords($names);
+
+    $catch: settings.$strict-mode;
+    @if (map.has-key($keywords, "strict-mode")) {
+        $_catch: map.get($keywords, "strict-mode");
+        @if (meta.type-of($_catch) == "bool") {
+            $catch: $_catch;
+        }
+    }
+
+    $msg: null;
+    @if (meta.has-key($keywords, "message")) {
+        $_msg: map.get($keywords, "message");
+        @if (meta.type-of($_msg) == "string") {
+            $msg: $msg;
+        }
+    }
+    
+    @if (meta.type-of($name) != "string") {
+        @include parameter-type.parameter-type("variable-type", "name", $name, "string", $strict-mode: $catch, $message: $msg);
+    }
+
+    @include private.variable-type($name, $value, $types...);
+}
+
+/// 
+/// Alias mixin of `throw.variable-type()`.
+/// 
+/// @param  {String}    $name                       - The name of the variable which has received the wrong type.
+/// @param  {*}         $value                      - The value which was received.
+/// @param  {ArgList}   $types                      - The types which are expected.
+/// @param  {String}    $message [null]             - The additional message which describes the issue. Must be passed by name.
+/// @param  {Boolean}   $strict-mode [%derived%]    - Optionally catch errors and output them as CSS comments without stopping compilation.
+/// 
+/// @output A string describing what types are acceptable for a variable and the value that is misconfigured.
+/// 
+/// @group  api
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Boolean}   settings.$strict-mode
+/// @require    {Function}  meta.keywords
+/// @require    {Function}  meta.type-of
+/// @require    {Function}  map.has-key
+/// @require    {Function}  map.get
+/// @require    {Mixin}     parameter-type.parameter-type
+/// @require    {Mixin}     private.variable-type
+/// 
+@mixin throw-variable-type($name, $value, $types...) {
+    $keywords: meta.keywords($names);
+
+    $catch: settings.$strict-mode;
+    @if (map.has-key($keywords, "strict-mode")) {
+        $_catch: map.get($keywords, "strict-mode");
+        @if (meta.type-of($_catch) == "bool") {
+            $catch: $_catch;
+        }
+    }
+
+    $msg: null;
+    @if (meta.has-key($keywords, "message")) {
+        $_msg: map.get($keywords, "message");
+        @if (meta.type-of($_msg) == "string") {
+            $msg: $msg;
+        }
+    }
+    
+    @if (meta.type-of($name) != "string") {
+        @include parameter-type.parameter-type("throw-variable-type", "name", $name, "string", $strict-mode: $catch, $message: $msg);
+    }
+
+    @include private.variable-type($name, $value, $types...);
+}
