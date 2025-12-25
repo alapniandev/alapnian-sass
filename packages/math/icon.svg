@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="AlapnianSassMetaModuleIcon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 128 128">
+  <!-- Alapnian Sass Meta Module Icon | Copyright (c) 2025 Alapnian | https://alapnian.com | sassdev@alapnian.com -->
+  <defs>
+    <linearGradient id="linear-gradient" x1="64" y1="127.32" x2="64" y2=".68" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#b9497b"/>
+      <stop offset="1" stop-color="#cd6799"/>
+    </linearGradient>
+  </defs>
+  <title>Alapnian Sass Math Module Icon</title>
+  <rect x=".54" y=".68" width="126.92" height="126.65" rx="27" ry="27" style="fill: url(#linear-gradient);"/>
+  <g>
+    <path d="M56.87,47.48h-21.44c-1.22,0-2.21-.99-2.21-2.21s.99-2.21,2.21-2.21h21.44c1.22,0,2.21.99,2.21,2.21s-.99,2.21-2.21,2.21Z" style="fill: #f8ebf2;"/>
+    <path d="M94.78,91.66c0,1.22-.99,2.21-2.21,2.21h-21.44c-1.22,0-2.21-.99-2.21-2.21s.99-2.21,2.21-2.21h21.44c1.22,0,2.21.99,2.21,2.21Z" style="fill: #f8ebf2;"/>
+    <path d="M92.57,43.06h-8.42v-8.51c0-1.22-.99-2.21-2.21-2.21s-2.21.99-2.21,2.21v8.51h-8.6c-1.22,0-2.21.99-2.21,2.21s.99,2.21,2.21,2.21h8.6v8.48c0,1.22.99,2.21,2.21,2.21s2.21-.99,2.21-2.21v-8.48h8.42c1.22,0,2.21-.99,2.21-2.21s-.99-2.21-2.21-2.21Z" style="fill: #f8ebf2;"/>
+    <path d="M49.28,82.75l9.16-9.14c.86-.86.86-2.26,0-3.12-.86-.86-2.26-.86-3.12,0l-9.16,9.15-9.16-9.15c-.86-.86-2.26-.86-3.12,0-.86.86-.86,2.26,0,3.12l9.16,9.14-9.16,9.14c-.86.86-.86,2.26,0,3.12.43.43,1,.65,1.56.65s1.13-.22,1.56-.65l9.16-9.15,9.16,9.15c.43.43,1,.65,1.56.65s1.13-.22,1.56-.65c.86-.86.86-2.26,0-3.12l-9.16-9.14Z" style="fill: #f8ebf2;"/>
+    <path d="M71.13,76.02h21.44c1.22,0,2.21-.99,2.21-2.21s-.99-2.21-2.21-2.21h-21.44c-1.22,0-2.21.99-2.21,2.21s.99,2.21,2.21,2.21Z" style="fill: #f8ebf2;"/>
+  </g>
+</svg>
