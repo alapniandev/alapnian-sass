@@ -1,0 +1,223 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///          This file is part of alapnian sass throw.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/meta";
+@use "../../helpers/map";
+@use "../private/parameter-type" as private;
+@use "../settings";
+
+
+/// 
+/// Returns an error message stating a parameter received the wrong type.
+/// When the `$strict-mode` parameter (or global `$strict-mode` setting) is set, the function will return errors without stopping compilation.
+/// 
+/// @alias throw-parameter-type
+/// 
+/// @param  {String}        $context                    - The name of the function issuing the error.
+/// @param  {String}        $name                       - The name of the parameter which has received the wrong type.
+/// @param  {*}             $value                      - The value which was received.
+/// @param  {ArgList}       $types                      - The types which are expected.
+/// @param  {String}        $message [null]             - The additional message which describes the issue. Must be passed by name.
+/// @param  {Boolean}       $strict-mode [%derived%]    - Optionally catch errors and return them as values without stopping compilation.
+/// @param  {*}             $default-value [null]       - Default return value when running in non-strict mode.
+/// @return {String | *}    - A string describing what types are acceptable for a parameter and the value that is invalid.
+/// 
+/// @group  api
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Boolean}   settings.$strict-mode
+/// @require    {Function}  meta.type-of
+/// @require    {Function}  meta.keywords
+/// @require    {Function}  map.get
+/// @require    {Function}  map.has-key
+/// @require    {Function}  private.parameter-type
+/// 
+@function parameter-type($context, $name, $value, $types...) {
+    $keywords: meta.keywords($names);
+
+    $catch: settings.$strict-mode;
+    @if (map.has-key($keywords, "strict-mode")) {
+        $_catch: map.get($keywords, "strict-mode");
+        @if (meta.type-of($_catch) == "bool") {
+            $catch: $_catch;
+        }
+    }
+    
+    @if (meta.type-of($context) != "string") {
+        @if (map.has-key($keywords, "default-value")) {
+            @return map.get($keywords, "default-value");
+        } @else {
+            @return private.parameter-type("parameter-type", "context", $context, "string", $strict-mode: $catch);
+        }
+    }
+    
+    @if (meta.type-of($name) != "string") {
+        @if (map.has-key($keywords, "default-value")) {
+            @return map.get($keywords, "default-value");
+        } @else {
+            @return private.parameter-type("parameter-type", "name", $name, "string", $strict-mode: $catch);
+        }
+    }
+
+    @return private.parameter-type($context, $name, $value, $types...);
+}
+
+/// 
+/// Alias function of `throw.parameter-type()`.
+/// 
+/// @param  {String}        $context                    - The name of the mixin issuing the error.
+/// @param  {String}        $name                       - The name of the parameter which has received the wrong type.
+/// @param  {*}             $value                      - The value which was received.
+/// @param  {ArgList}       $types                      - The types which are expected.
+/// @param  {String}        $message [null]             - The additional message which describes the issue. Must be passed by name.
+/// @param  {Boolean}       $strict-mode [%derived%]    - Optionally catch errors and return them as values without stopping compilation.
+/// @param  {*}             $default-value [null]       - Default return value when running in non-strict mode.
+/// @return {String | *}    - A string describing what types are acceptable for a parameter and the value that is invalid.
+/// 
+/// @group  api
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Boolean}   settings.$strict-mode
+/// @require    {Function}  meta.type-of
+/// @require    {Function}  meta.keywords
+/// @require    {Function}  map.get
+/// @require    {Function}  map.has-key
+/// @require    {Function}  private.parameter-type
+/// 
+@function throw-parameter-type($context, $name, $value, $types...) {
+    $keywords: meta.keywords($names);
+
+    $catch: settings.$strict-mode;
+    @if (map.has-key($keywords, "strict-mode")) {
+        $_catch: map.get($keywords, "strict-mode");
+        @if (meta.type-of($_catch) == "bool") {
+            $catch: $_catch;
+        }
+    }
+    
+    @if (meta.type-of($context) != "string") {
+        @if (map.has-key($keywords, "default-value")) {
+            @return map.get($keywords, "default-value");
+        } @else {
+            @return private.parameter-type("throw-parameter-type", "context", $context, "string", $strict-mode: $catch);
+        }
+    }
+    
+    @if (meta.type-of($name) != "string") {
+        @if (map.has-key($keywords, "default-value")) {
+            @return map.get($keywords, "default-value");
+        } @else {
+            @return private.parameter-type("throw-parameter-type", "name", $name, "string", $strict-mode: $catch);
+        }
+    }
+
+    @return private.parameter-type($context, $name, $value, $types...);
+}
+
+/// 
+/// An error message stating a parameter received the wrong type.
+/// When the `$strict-mode` parameter (or global `$strict-mode` setting) is set, the function will return errors without stopping compilation.
+/// 
+/// @alias throw-parameter-type
+/// 
+/// @param  {String}    $context                    - The name of the mixin issuing the error.
+/// @param  {String}    $name                       - The name of the parameter which has received the wrong type.
+/// @param  {*}         $value                      - The value which was received.
+/// @param  {ArgList}   $types                      - The types which are expected.
+/// @param  {String}    $message [null]             - The additional message which describes the issue. Must be passed by name.
+/// @param  {Boolean}   $strict-mode [%derived%]    - Optionally catch errors and output them as CSS comments without stopping compilation.
+/// 
+/// @output A string describing what types are acceptable for a parameter and the value that is invalid.
+/// 
+/// @group  alapnian-sass-throw
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Boolean}   settings.$strict-mode
+/// @require    {Function}  meta.type-of
+/// @require    {Function}  meta.keywords
+/// @require    {Function}  map.get
+/// @require    {Function}  map.has-key
+/// @require    {Mixin}     private.parameter-type
+/// 
+@mixin parameter-type($context, $name, $value, $types...) {
+    $keywords: meta.keywords($names);
+
+    $catch: settings.$strict-mode;
+    @if (map.has-key($keywords, "strict-mode")) {
+        $_catch: map.get($keywords, "strict-mode");
+        @if (meta.type-of($_catch) == "bool") {
+            $catch: $_catch;
+        }
+    }
+    
+    @if (meta.type-of($context) != "string") {
+        @include private.parameter-type("parameter-type", "context", $context, "string", $strict-mode: $catch);
+    } @else if (meta.type-of($name) != "string") {
+        @include private.parameter-type("parameter-type", "name", $name, "string", $strict-mode: $catch);
+    } @else {
+        @include private.parameter-type($context, $name, $value, $types...);
+    }
+}
+
+/// 
+/// Alias mixin of `throw.parameter-type()`.
+/// 
+/// @param  {String}    $message                    - The message which describes the issue.
+/// @param  {String}    $context                    - The name of the mixin issuing the error.
+/// @param  {ArgList}   $names                      - The names of the parameters for which there is an issue.
+/// @param  {Boolean}   $strict-mode [%derived%]    - Optionally catch errors and output them as CSS comments without stopping compilation.
+/// 
+/// @output A string describing the reason one or more parameters are invalid.
+/// 
+/// @group  api
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Boolean}   settings.$strict-mode
+/// @require    {Function}  meta.type-of
+/// @require    {Function}  meta.keywords
+/// @require    {Function}  map.get
+/// @require    {Function}  map.has-key
+/// @require    {Mixin}     private.parameter-type
+/// 
+@mixin throw-parameter-type($context, $name, $value, $types...) {
+    $keywords: meta.keywords($names);
+
+    $catch: settings.$strict-mode;
+    @if (map.has-key($keywords, "strict-mode")) {
+        $_catch: map.get($keywords, "strict-mode");
+        @if (meta.type-of($_catch) == "bool") {
+            $catch: $_catch;
+        }
+    }
+    
+    @if (meta.type-of($context) != "string") {
+        @include private.parameter-type("parameter-type", "context", $context, "string", $strict-mode: $catch);
+    } @else if (meta.type-of($name) != "string") {
+        @include private.parameter-type("parameter-type", "name", $name, "string", $strict-mode: $catch);
+    } @else {
+        @include private.parameter-type($context, $name, $value, $types...);
+    }
+}
