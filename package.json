@@ -1,0 +1,49 @@
+{
+  "name": "alapnian-sass",
+  "private": true,
+  "description": "A set of Sass modules that abstract common functionality to aid rapid development of stylesheets and domain-specific modules.",
+  "keywords": [
+    "sass",
+    "scss",
+    "dart-sass",
+    "library",
+    "module",
+    "alapnian-sass"
+  ],
+  "license": "MIT",
+  "author": {
+    "name": "Alapnian Sass Dev",
+    "email": "sassdev@alapnian.com",
+    "url": "https://alapnian.com/teams/@sassdev"
+  },
+  "homepage": "https://module.alapnian.com/sass/",
+  "bugs": {
+    "url": "https://github.com/alapniandev/alapnian-sass/issues"
+  },
+  "repository": {
+    "type": "git",
+    "branch": "main",
+    "url": "git+https://github.com/alapniandev/alapnian-sass.git"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "files": [
+    "/stylesheets/**/*.s{a,c}ss",
+    "/*.s{a,c}ss",
+    "/icon.{png,svg}",
+    "/cover.{png,svg}",
+    "/banner.{png,svg}",
+    "/package.json",
+    "/sache.json",
+    "/.{npm,git}ignore",
+    "/CHANGELOG.md",
+    "/LICENSE",
+    "/README.md"
+  ],
+  "engines": {
+    "node": "22.17.1",
+    "yarn": "1.22.22",
+    "vscode": "^1.22.0"
+  }
+}
