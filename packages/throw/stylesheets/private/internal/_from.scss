@@ -1,0 +1,139 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///          This file is part of alapnian sass throw.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../../helpers/meta";
+@use "../../../helpers/string";
+@use "../../../helpers/list";
+@use "utils";
+
+
+/// 
+/// Creates a normalized string from the provided value, with unique punctuation differentiating types and characteristics.
+/// 
+/// @param  {*}         $value  - The value from which to generate a string.
+/// @return {String}    - The string representation of the given value.
+/// 
+/// @group  alapnian-sass-throw/internal
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  meta.type-of
+/// @require    {Function}  meta.inspect
+/// @require    {Function}  string.slice
+/// @require    {Function}  string.index
+/// @require    {Function}  list.is-bracketed
+/// @require    {Function}  to-string
+/// 
+@function from($value) {
+    $type: meta.type-of($value);
+
+    @if ($type == "string") {
+        @return $value;
+    }
+
+    @if ($type == "map") {
+        @return "{" + to-string($value, $type) + "}";
+    }
+
+    @if ($type == "list" or $type == "arglist") {
+        $value: to-string($value, $type);
+
+        @if (list.is-bracketed($value)) {
+            @return "[#{$value}]";
+        } @else {
+            @return "(#{$value})";
+        }
+    }
+
+    @if ($type == "function") {
+        $value: meta.inspect($value);
+        $value: string.slice($value, string.index($value, '"') + 1);
+        $value: string.slice($value, 0, string.index($value, '"') - 1) + "()";
+    }
+
+    @return "#{$value}";
+}
+
+///
+/// Concatenates all of the items in an iterable value to a string, separated by the specified glue string. If the iterable has only one item, then that item will be returned without using the glue.
+///
+/// @param  {List | Map | ArgList}          $value  - The iterable to join.
+/// @param  {String}                        $glue   - The string to separate each pair of adjacent items of the iterable value. The value is converted to a string if necessary.
+/// @param  {"list" | "map" | "arglist"}    $type   - The type used to determine expected format.
+/// @return {String}                        - A string with all list items joined.
+/// 
+/// @group  alapnian-sass-throw/internal
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  meta.keywords
+/// @require    {Function}  list.length
+/// @require    {Function}  from
+///
+@function join($value, $glue, $type) {
+    $length: list.length($value);
+    $glue: from($glue);
+    $result: "";
+    $index: 1;
+
+    @each $item in $value {
+
+        @if ($type == "map") {
+            $item: join($item, ": ", "list");
+        }
+
+        $result: $result + from($item);
+
+        @if ($index < $length) {
+            $result: $result + $glue;
+        }
+
+        $index: $index + 1;
+    }
+
+    @if ($type == "arglist") {
+        $result: $result + $glue + join(meta.keywords($value), ", ", "map");
+    }
+
+    @return $result;
+}
+
+///
+/// Returns a string representing the specified list or map and its items.
+///
+/// @param  {List}                          $value  - The value from which to generate a string.
+/// @param  {"list" | "map" | "arglist"}    $type   - The type value from which to generate a string.
+/// @return {String}                        - A string representing the specified list or map and its items.
+/// 
+/// @group  alapnian-sass-throw/internal
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  join
+/// @require    {Function}  utils.delimiter
+///
+@function to-string($value, $type) {
+    @if ($type == "map") {
+        @return join($value, "; ", $type);
+    }
+
+    @return join($value, utils.delimiter($value), $type);
+}
