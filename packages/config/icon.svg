@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="AlapnianSassConfigModuleIcon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 128 128">
+  <!-- Alapnian Sass Config Module Icon | Copyright (c) 2025 Alapnian | https://alapnian.com | sassdev@alapnian.com -->
+  <defs>
+    <linearGradient id="linear-gradient" x1="64" y1="127.32" x2="64" y2=".68" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#b9497b"/>
+      <stop offset="1" stop-color="#cd6799"/>
+    </linearGradient>
+  </defs>
+  <title>Alapnian Sass Config Module Icon</title>
+  <rect x=".54" y=".68" width="126.92" height="126.65" rx="27" ry="27" style="fill: url(#linear-gradient);"/>
+  <g>
+    <path d="M45.09,35.61c0-1.79,1.48-3.28,3.28-3.28s3.28,1.48,3.28,3.28v17.03c0,1.79-1.48,3.28-3.28,3.28s-3.28-1.48-3.28-3.28v-17.03Z" style="fill: #f8ebf2;"/>
+    <path d="M53.18,83.35c-.89.39-1.54,1.23-1.54,2.2v6.83c0,1.79-1.48,3.28-3.28,3.28s-3.28-1.48-3.28-3.28v-6.83c0-.97-.65-1.81-1.54-2.2-4.17-1.85-7.06-6-7.06-10.84,0-6.55,5.33-11.92,11.88-11.92s11.92,5.33,11.92,11.92c0,4.84-2.93,8.98-7.11,10.84Z" style="fill: #f8ebf2;"/>
+    <path d="M82.91,92.39c0,1.79-1.48,3.28-3.28,3.28s-3.28-1.48-3.28-3.28v-17.03c0-1.79,1.48-3.28,3.28-3.28s3.28,1.48,3.28,3.28v17.03Z" style="fill: #f8ebf2;"/>
+    <path d="M79.63,67.36c-6.55,0-11.92-5.33-11.92-11.92,0-4.84,2.93-8.98,7.11-10.84.89-.39,1.54-1.23,1.54-2.2v-6.79c0-1.79,1.48-3.28,3.28-3.28s3.28,1.48,3.28,3.28v6.83c0,.97.65,1.81,1.54,2.2,4.17,1.85,7.06,6,7.06,10.84,0,6.55-5.33,11.88-11.88,11.88Z" style="fill: #f8ebf2;"/>
+  </g>
+</svg>
