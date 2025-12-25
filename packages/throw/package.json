@@ -1,0 +1,39 @@
+{
+  "name": "@alapnian-sass/throw",
+  "version": "0.0.0",
+  "displayName": "Alapnian Sass Throw Module",
+  "description": "Provides Sass functions to standardize exception messages.",
+  "keywords": [
+    "sass",
+    "scss",
+    "library",
+    "module",
+    "throw",
+    "exception",
+    "error",
+    "alapnian-sass"
+  ],
+  "homepage": "https://module.alapnian.com/sass/throw",
+  "bugs": {
+    "url": "https://github.com/alapniandev/alapnian-sass/issues"
+  },
+  "repository": {
+    "type": "git",
+    "directory": "packages/throw",
+    "branch": "main",
+    "url": "git+https://github.com/alapniandev/alapnian-sass.git"
+  },
+  "license": "MIT",
+  "author": "Alapnian Sass Dev <sassdev@alapnian.com> (https://alapnian.com/teams/@sassdev)",
+  "exports": {
+    ".": "./_index.scss"
+  },
+  "main": "./_index.scss",
+  "publishConfig": {
+    "registry":"https://npm.pkg.github.com/"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {}
+}
