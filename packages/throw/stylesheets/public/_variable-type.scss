@@ -51,7 +51,7 @@
 /// @require    {Mixin}     private.variable-type
 /// 
 @mixin variable-type($name, $value, $types...) {
-    $keywords: meta.keywords($names);
+    $keywords: meta.keywords($types);
 
     $catch: settings.$strict-mode;
     @if (map.has-key($keywords, "strict-mode")) {
@@ -101,7 +101,7 @@
 /// @require    {Mixin}     private.variable-type
 /// 
 @mixin throw-variable-type($name, $value, $types...) {
-    $keywords: meta.keywords($names);
+    $keywords: meta.keywords($types);
 
     $catch: settings.$strict-mode;
     @if (map.has-key($keywords, "strict-mode")) {

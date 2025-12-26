@@ -50,7 +50,7 @@
 /// @require    {Function}  private.parameter-type
 /// 
 @function parameter-type($context, $name, $value, $types...) {
-    $keywords: meta.keywords($names);
+    $keywords: meta.keywords($types);
 
     $catch: settings.$strict-mode;
     @if (map.has-key($keywords, "strict-mode")) {
@@ -104,7 +104,7 @@
 /// @require    {Function}  private.parameter-type
 /// 
 @function throw-parameter-type($context, $name, $value, $types...) {
-    $keywords: meta.keywords($names);
+    $keywords: meta.keywords($types);
 
     $catch: settings.$strict-mode;
     @if (map.has-key($keywords, "strict-mode")) {
@@ -161,7 +161,7 @@
 /// @require    {Mixin}     private.parameter-type
 /// 
 @mixin parameter-type($context, $name, $value, $types...) {
-    $keywords: meta.keywords($names);
+    $keywords: meta.keywords($types);
 
     $catch: settings.$strict-mode;
     @if (map.has-key($keywords, "strict-mode")) {
@@ -203,7 +203,7 @@
 /// @require    {Mixin}     private.parameter-type
 /// 
 @mixin throw-parameter-type($context, $name, $value, $types...) {
-    $keywords: meta.keywords($names);
+    $keywords: meta.keywords($types);
 
     $catch: settings.$strict-mode;
     @if (map.has-key($keywords, "strict-mode")) {
