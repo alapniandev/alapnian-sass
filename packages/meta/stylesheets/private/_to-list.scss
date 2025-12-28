@@ -1,0 +1,55 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/list";
+@use "../../helpers/map";
+@use "type-of";
+
+
+/// 
+/// Convert `$value` to list value.
+/// 
+/// @param  {*}     $value  - Value to cast.
+/// @return {List}  - Return list value.
+/// 
+/// @group  alapnian-sass-meta
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  list.zip
+/// @require    {Function}  map.keys
+/// @require    {Function}  map.values
+/// @require    {Function}  type-of.type-of
+/// 
+@function to-list($value) {
+    $type: type-of.type-of($value);
+
+    // If the value is already a list, we can safely return it.
+    @if ($type == "list") {
+        @return $value;
+    }
+
+    // If the value is a map, we return a zip of keys and values (aka a list-map).
+    @if ($type == 'map') {
+        @return list.zip(map.keys($value), map.values($value));
+    }
+
+    // Else we wrap the item in a single-item list.
+    @return ($value,);
+}
