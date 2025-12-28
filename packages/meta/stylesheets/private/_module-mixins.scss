@@ -1,0 +1,37 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/meta";
+
+
+/// 
+/// Return all the mixins defined within a specific module.
+/// 
+/// @param  {String}    $module - The namespace of the module from which you want to retrieve mixins. This string must match a namespace established using the @use rule in the current file.
+/// @return {Map}       - Returns a map where the keys are the mixin names (as strings, without the `@mixin` prefix or parentheses) and the values are the corresponding mixin values (first-class mixins).
+/// 
+/// @group  alapnian-sass-meta
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  meta.module-mixins
+/// 
+@function module-mixins($module) {
+    @return meta.module-mixins($module);
+}
