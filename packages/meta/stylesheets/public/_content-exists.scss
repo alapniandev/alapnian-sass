@@ -1,0 +1,37 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../private/content-exists" as private;
+
+
+/// 
+/// Returns whether the current mixin was passed a `@content` block.
+/// Throws an error if called outside of a mixin.
+/// 
+/// @return {Boolean}  - Return `true` if a `@content` block is present, `false` otherwise.
+/// 
+/// @group  api
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  private.content-exists
+/// 
+@function content-exists() {
+    @return private.content-exists();
+}

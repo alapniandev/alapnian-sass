@@ -1,0 +1,38 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/meta";
+@use "../../helpers/list";
+
+
+/// 
+/// Returns whether the current mixin was passed a `@content` block.
+/// Throws an error if called outside of a mixin.
+/// 
+/// @return {Boolean}  - Return `true` if a `@content` block is present, `false` otherwise.
+/// 
+/// @group  alapnian-sass-meta
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  meta.content-exists
+/// 
+@function content-exists() {
+    @return meta.content-exists();
+}
