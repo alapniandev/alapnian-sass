@@ -1,0 +1,109 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/throw";
+@use "../../helpers/map";
+@use "../private/keywords";
+@use "../private/to-string";
+@use "../private/type-of";
+@use "../private/apply" as private;
+@use "../settings";
+
+
+/// 
+/// Includes `$mixin` with `$args`.
+/// 
+/// @alias  apply-mixin
+/// 
+/// @param  {Mixin}     $mixin                      - A mixin value, usually obtained using the `meta.get-mixin()` function.
+/// @param  {ArgList}   $args                       - An optional argument list that specifies the arguments to pass to the applied mixin. The `...` syntax allows for passing an arbitrary number of positional and/or keyword arguments.
+/// @param  {Boolean}   $strict-mode    [%derived%] - Optionally catch errors and output them as CSS comments without stopping compilation.
+/// 
+/// @output If this is passed a `@content` block, it’s forwarded to `$mixin`.
+/// 
+/// @group  api
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Boolean}   settings.$strict-mode
+/// @require    {Function}  map.has-key
+/// @require    {Function}  map.get
+/// @require    {Function}  type-of.type-of
+/// @require    {Function}  keywords.keywords
+/// @require    {Function}  to-string.to-string
+/// @require    {Mixin}     throw.parameter-type
+/// @require    {Mixin}     private.apply
+/// 
+@mixin apply($mixin, $args...) {
+    $keywords: keywords.keywords($args);
+
+    $catch: settings.$strict-mode;
+    @if (map.has-key($keywords, "strict-mode")) {
+        $_catch: map.get($keywords, "strict-mode");
+        @if (meta.type-of($_catch) == "bool") {
+            $catch: $_catch;
+        }
+    }
+
+    @if (type-of.type-of($mixin) != "mixin") {
+        @include throw.parameter-type("apply", "mixin", $mixin, "mixin", $strict-mode: $catch, $message: 'Use the `meta.get-mixin("#{to-string.to-string($mixin)}")` or `get-mixin("#{to-string.to-string($mixin)}")` function.');
+    } @else {
+        @include private.apply($mixin, $args...);
+    }
+}
+
+/// 
+/// Alias mixin of `meta.apply()`.
+/// 
+/// @param  {Mixin}     $mixin  - A mixin value, usually obtained using the `meta.get-mixin()` function.
+/// @param  {ArgList}   $args   - An optional argument list that specifies the arguments to pass to the applied mixin. The `...` syntax allows for passing an arbitrary number of positional and/or keyword arguments.
+/// 
+/// @output If this is passed a `@content` block, it’s forwarded to `$mixin`.
+/// 
+/// @group  api
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Boolean}   settings.$strict-mode
+/// @require    {Function}  map.has-key
+/// @require    {Function}  map.get
+/// @require    {Function}  type-of.type-of
+/// @require    {Function}  keywords.keywords
+/// @require    {Function}  to-string.to-string
+/// @require    {Mixin}     throw.parameter-type
+/// @require    {Mixin}     private.apply
+/// 
+@mixin apply-mixin($mixin, $args...) {
+    $keywords: keywords.keywords($args);
+
+    $catch: settings.$strict-mode;
+    @if (map.has-key($keywords, "strict-mode")) {
+        $_catch: map.get($keywords, "strict-mode");
+        @if (type-of.type-of($_catch) == "bool") {
+            $catch: $_catch;
+        }
+    }
+
+    @if (type-of.type-of($mixin) != "mixin") {
+        @include throw.parameter-type("apply-mixin", "mixin", $mixin, "mixin", $strict-mode: $catch, $message: 'Use the `meta.get-mixin("#{to-string.to-string($mixin)}")` or `get-mixin("#{to-string.to-string($mixin)}")` function.');
+    } @else {
+        @include private.apply($mixin, $args...);
+    }
+}

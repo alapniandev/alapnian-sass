@@ -1,0 +1,39 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/meta";
+
+
+/// 
+/// Includes `$mixin` with `$args`.
+/// 
+/// @param  {Mixin}     $mixin  - A mixin value, usually obtained using the `meta.get-mixin()` function.
+/// @param  {ArgList}   $args   - An optional argument list that specifies the arguments to pass to the applied mixin. The `...` syntax allows for passing an arbitrary number of positional and/or keyword arguments.
+/// 
+/// @output If this is passed a `@content` block, it’s forwarded to `$mixin`.
+/// 
+/// @group  alapnian-sass-meta
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Mixin} meta.apply
+/// 
+@mixin apply($mixin, $args...) {
+    @include meta.apply($mixin, $args...);
+}
