@@ -1,0 +1,39 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/meta";
+
+
+/// 
+/// Used in scenarios where you need to load a stylesheet dynamically within a specific scope or context, which was a common pattern with the now-deprecated `@import` rule.
+/// 
+/// @param  {String}    $url            - This mandatory parameter specifies the path to the Sass stylesheet to be loaded. Relative URLs are resolved relative to the file in which `meta.load-css()` is included.
+/// @param  {Map}       $with [null]    - An optional parameter allows you to configure the module being loaded. It accepts a map where keys are variable names (without the `$`) and values are the values to use in the loaded module. This configuration can only override variables that are explicitly declared with the `!default` flag in the target module.
+/// 
+/// @output Loads the module at $url and includes its CSS as though it were written as the contents of this mixin.
+/// 
+/// @group  alapnian-sass-meta
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Mixin} meta.load-css
+/// 
+@mixin load-css($url, $with: null) {
+    @include meta.load-css($url, $with);
+}

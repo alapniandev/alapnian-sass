@@ -1,0 +1,77 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/list";
+@use "../../helpers/map";
+@use "../../helpers/throw";
+@use "../private/keywords";
+@use "../private/type-of";
+@use "../settings";
+
+
+/// 
+/// Used in scenarios where you need to load a stylesheet dynamically within a specific scope or context, which was a common pattern with the now-deprecated `@import` rule.
+/// 
+/// @param  {String}    $url                        - This mandatory parameter specifies the path to the Sass stylesheet to be loaded. Relative URLs are resolved relative to the file in which `meta.load-css()` is included.
+/// @param  {Map}       $with [null]                - An optional parameter allows you to configure the module being loaded. It accepts a map where keys are variable names (without the `$`) and values are the values to use in the loaded module. This configuration can only override variables that are explicitly declared with the `!default` flag in the target module.
+/// @param  {Boolean}   $strict-mode [%derived%]    - Optionally catch errors and output them as CSS comments without stopping compilation.
+/// 
+/// @output Loads the module at $url and includes its CSS as though it were written as the contents of this mixin.
+/// 
+/// @group  api
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Boolean}   settings.$strict-mode
+/// @require    {Function}  map.has-key
+/// @require    {Function}  map.get
+/// @require    {Function}  list.length
+/// @require    {Function}  list.nth
+/// @require    {Function}  throw.parameter-type
+/// @require    {Function}  keywords.keywords
+/// @require    {Function}  type-of.type-of
+/// @require    {Mixin}     private.load-css
+/// 
+@mixin load-css($url, $with...) {
+    $keywords: keywords.keywords($with);
+
+    $catch: settings.$strict-mode;
+    @if (map.has-key($keywords, "strict-mode")) {
+        $_catch: map.get($keywords, "strict-mode");
+        @if (type-of.type-of($_catch) == "bool") {
+            $catch: $_catch;
+        }
+    }
+
+    @if (type-of.type-of($url) != "string") {
+        @include throw.parameter-type("load-css", "url", $url, "string", $strict-mode: $catch);
+    } @else {
+        @if (list.length($with) > 0) {
+            $with: list.nth($with, 1);
+        } @else {
+            $with: null;
+        }
+        
+        @if (type-of.type-of($with) != "null" or type-of.type-of($with) != "map") {
+            @include throw.parameter-type("load-css", "with", $with, "null", "map", $strict-mode: $catch);
+        } @else {
+            @include private.load-css($url, $with);
+        }
+    }
+}
