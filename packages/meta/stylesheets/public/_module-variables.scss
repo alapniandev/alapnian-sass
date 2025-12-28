@@ -1,0 +1,70 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/map";
+@use "../../helpers/throw";
+@use "../private/keywords";
+@use "../private/type-of";
+@use "../private/to-map";
+@use "../private/module-variables" as private;
+@use "../settings";
+
+
+/// 
+/// Returns all the variables defined in a module, as a map from variable names (without `$`) to the values of those variables.
+/// 
+/// @param  {String}    $module                     - A string matching the namespace of a `@use` rule in the current file.
+/// @param  {Boolean}   $strict-mode [%derived%]    - Optionally catch errors and return them as values without stopping compilation.
+/// @param  {*}         $default-value [null]       - Default return value when running in non-strict mode.
+/// @return {Map}       - Returns a map where the keys are the variable names (without the `$` prefix) and the values are the corresponding variable values.
+/// 
+/// @group  api
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Boolean}   settings.$strict-mode
+/// @require    {Function}  map.has-key
+/// @require    {Function}  map.get
+/// @require    {Function}  throw.parameter-type
+/// @require    {Function}  keywords.keywords
+/// @require    {Function}  type-of.type-of
+/// @require    {Function}  to-map.to-map
+/// @require    {Function}  private.module-variables
+/// 
+@function module-variables($module...) {
+    $keywords: keywords.keywords($module);
+
+    $catch: settings.$strict-mode;
+    @if (map.has-key($keywords, "strict-mode")) {
+        $_catch: map.get($keywords, "strict-mode");
+        @if (type-of.type-of($_catch) == "bool") {
+            $catch: $_catch;
+        }
+    }
+
+    @if (type-of.type-of($module) != "string") {
+        @if (map.has-key($keywords, "default-value")) {
+            @return to-map.to-map(map.get($keywords, "default-value"));
+        } @else {
+            @return throw.parameter-type("module-variables", "module", $module, "string", $strict-mode: $catch);
+        }
+    }
+
+    @return private.module-variables($module);
+}
