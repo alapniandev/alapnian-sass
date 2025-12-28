@@ -1,0 +1,41 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/meta";
+
+
+/// 
+/// Extract the arguments from a given calculation value, such as `calc()`, `min()`, `max()`, or `clamp()`.
+/// Returns the arguments for the given calculation.
+/// 
+/// @link   https://www.w3.org/TR/css-values-4/#calc-func
+/// @link   https://www.w3.org/TR/css-values-4/#comp-func
+/// 
+/// @param  {Calculation}   $calc  - A calculation value.
+/// @return {List}          - If an argument is a number or a nested calculation, it’s returned as that type. Otherwise, it’s returned as an unquoted string.
+/// 
+/// @group  alapnian-sass-meta
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  meta.calc-args
+/// 
+@function calc-args($calc) {
+    @return meta.calc-args($calc);
+}
