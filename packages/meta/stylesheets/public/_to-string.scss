@@ -1,0 +1,54 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../private/to-string" as private;
+
+
+/// 
+/// Convert `$value` to string value.
+/// 
+/// @param  {*}         $value  - Value to cast.
+/// @return {String}    - Return string value.
+/// 
+/// @group  api
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  private.to-string
+/// 
+@function to-string($value) {
+    @return private.to-string($value);
+}
+
+/// 
+/// Alias function of `meta.to-string()`.
+/// 
+/// @param  {*}         $value  - Value to cast.
+/// @return {String}    - Return string value.
+/// 
+/// @group  api
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  private.to-string
+/// 
+@function to-string($value) {
+    @return private.to-string($value);
+}

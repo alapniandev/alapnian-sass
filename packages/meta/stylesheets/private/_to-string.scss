@@ -1,0 +1,46 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/string";
+@use "inspect";
+@use "type-of";
+
+
+/// 
+/// Convert `$value` to string value.
+/// 
+/// @param  {*}         $value  - Value to cast.
+/// @return {String}    - Return string value.
+/// 
+/// @group  alapnian-sass-meta
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  string.quote
+/// @require    {Function}  inspect.inspect
+/// @require    {Function}  type-of.type-of
+/// 
+@function to-string($value) {
+    // If the value is already a string, we can safely return it.
+    @if (type-of.type-of($value) == 'string') {
+        @return $value;
+    }
+
+    @return string.quote(inspect.inspect($value));
+}
