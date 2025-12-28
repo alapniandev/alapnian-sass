@@ -1,0 +1,38 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/meta";
+
+
+/// 
+/// Check if a global variable with a specific name is defined.
+/// 
+/// @param  {String}    $name           - The name of the variable to check for, without the `$` prefix.
+/// @param  {String}    $module [null]  - The namespace of a module to check within. If `null` (default), the function checks for a globally available variable.
+/// @return {Boolean}  - Returns whether a global variable named `$name` (without the `$`) exists.
+/// 
+/// @group  alapnian-sass-meta
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  meta.global-variable-exists
+/// 
+@function global-variable-exists($name, $module: null) {
+    @return meta.global-variable-exists($name, $module);
+}
