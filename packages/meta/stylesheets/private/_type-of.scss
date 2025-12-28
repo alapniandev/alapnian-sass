@@ -1,0 +1,39 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/meta";
+
+
+/// 
+/// Determine the data type of a given value in SassScript.
+/// 
+/// @link https://sass-lang.com/documentation/modules/meta/#type-of
+/// 
+/// @param  {String}    $value  - The value whose type you want to check.
+/// @return {String}    - Returns the type of `$value`.
+/// 
+/// @group  api
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  meta.type-of
+/// 
+@function type-of($value) {
+    @return meta.type-of($value);
+}
