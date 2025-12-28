@@ -1,0 +1,88 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/map";
+@use "../../helpers/throw";
+@use "../private/keywords";
+@use "../private/type-of";
+@use "../private/mixin-exists";
+@use "../private/get-mixin" as private;
+@use "../settings";
+
+
+/// 
+/// Retrieve a mixin as a first-class value.
+/// 
+/// @param  {String}    $name                       - A string representing the name of the mixin you want to retrieve.
+/// @param  {String}    $module [null]              - An optional string representing the namespace of a `@use` rule.
+/// @param  {Boolean}   $strict-mode [%derived%]    - Optionally catch errors and return them as values without stopping compilation.
+/// @param  {*}         $default-value [null]       - Default return value when running in non-strict mode.
+/// @return {Function}  - Returns the mixin value named $name.
+/// 
+/// @group  api
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Boolean}   settings.$strict-mode
+/// @require    {Function}  map.has-key
+/// @require    {Function}  map.get
+/// @require    {Function}  throw.parameter
+/// @require    {Function}  throw.parameter-type
+/// @require    {Function}  keywords.keywords
+/// @require    {Function}  type-of.type-of
+/// @require    {Function}  mixin-exists.mixin-exists
+/// @require    {Function}  private.get-mixin
+/// 
+@function get-mixin($name, $module...) {
+    $keywords: keywords.keywords($module);
+
+    $catch: settings.$strict-mode;
+    @if (map.has-key($keywords, "strict-mode")) {
+        $_catch: map.get($keywords, "strict-mode");
+        @if (type-of.type-of($_catch) == "bool") {
+            $catch: $_catch;
+        }
+    }
+
+    @if (type-of.type-of($name) != "string") {
+        @if (map.has-key($keywords, "default-value")) {
+            @return map.get($keywords, "default-value");
+        } @else {
+            @return throw.parameter-type("get-mixin", "name", $name, "string", $strict-mode: $catch);
+        }
+    }
+
+    @if (type-of.type-of($module) != "null" or type-of.type-of($module) != "string") {
+        @if (map.has-key($keywords, "default-value")) {
+            @return map.get($keywords, "default-value");
+        } @else {
+            @return throw.parameter-type("get-mixin", "module", $module, "null", "string", $strict-mode: $catch);
+        }
+    }
+
+    @if (not mixin-exists.mixin-exists($name, $module)) {
+        @if (map.has-key($keywords, "default-value")) {
+            @return map.get($keywords, "default-value");
+        } @else {
+            @return throw.parameter("`#{$name}` mixin not found.", "get-mixin", "name", $strict-mode: $catch);
+        }
+    }
+
+    @return private.get-mixin($name, $module);
+}
