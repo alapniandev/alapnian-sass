@@ -1,0 +1,53 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../../helpers/list";
+@use "../../../helpers/string";
+
+
+/// 
+/// Removes whitespace from both ends of a string. Whitespace in this context is all the whitespace characters (space, tab, no-break space, etc.) and all the line terminator characters (LF, CR, etc.).
+/// 
+/// @param  {String}    $string - The source string from which to remove leading and trailing whitespace.
+/// @return {String}    - A string stripped of whitespace from both its beginning and end. If neither the beginning or end of source string has any whitespace, the string is simply returned, with no exception being thrown.
+/// 
+/// @group  alapnian-sass-meta/internal
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  list.index
+/// @require    {Function}  string.slice
+/// @require    {Function}  string.length
+/// 
+@function trim($string) {
+    // A list of all the characters associated with '\s' in JavaScript.
+    $whitespace: ' ', '\000C', '\000A', '\000D', '\0009', '\000B', '\00A0', '\1680', '\2000', '\2001', '\2002', '\2003', '\2004', '\2005', '\2006', '\2007', '\2008', '\2009', '\200A', '\2028', '\2029', '\202F', '\205F', '\3000', '\FEFF';
+
+    // trim-start
+    @while (list.index($whitespace, string.slice($string, 1, 1))) {
+        $string: string.slice($string, 2);
+    }
+
+    // trim-end
+    @while (list.index($whitespace, string.slice($string, string.length($string), -1))) {
+        $string: string.slice($string, 1, -2);
+    }
+
+    @return $string;
+}
