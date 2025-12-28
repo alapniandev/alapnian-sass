@@ -22,7 +22,6 @@
 @use "../../helpers/math";
 @use "internal/utils";
 @use "../settings";
-@use "hex-to-decimal";
 @use "to-number";
 @use "type-of";
 
@@ -95,9 +94,9 @@
 /// @require    {Function}  string.to-lower-case
 /// @require    {Function}  string.length
 /// @require    {Function}  string.slice
+/// @require    {Function}  string.hex-to-decimal
 /// @require    {Function}  list.index
 /// @require    {Function}  math.div
-/// @require    {Function}  hex-to-decimal.hex-to-decimal
 /// 
 @function _from-hex($string) {
     $string: string.to-lower-case($string);
@@ -150,10 +149,10 @@
     }
 
     @if ($a == "") {
-        @return rgb(hex-to-decimal.hex-to-decimal($r), hex-to-decimal.hex-to-decimal($g), hex-to-decimal.hex-to-decimal($b));
+        @return rgb(string.hex-to-decimal($r), string.hex-to-decimal($g), string.hex-to-decimal($b));
     }
 
-    @return rgba(hex-to-decimal.hex-to-decimal($r), hex-to-decimal.hex-to-decimal($g), hex-to-decimal.hex-to-decimal($b), math.div(hex-to-decimal.hex-to-decimal($b), 255));
+    @return rgba(string.hex-to-decimal($r), string.hex-to-decimal($g), string.hex-to-decimal($b), math.div(string.hex-to-decimal($b), 255));
 }
 
 /// 
