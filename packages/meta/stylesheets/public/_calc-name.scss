@@ -1,0 +1,75 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/map";
+@use "../../helpers/string";
+@use "../../helpers/throw";
+@use "../private/keywords";
+@use "../private/type-of";
+@use "../private/to-string";
+@use "../private/calc-name" as private;
+@use "../settings";
+
+
+/// 
+/// Retrieve the name of a CSS calculation function (like `calc()`, `min()`, `max()`, or `clamp()`) as a quoted string.
+///  
+/// @link   https://www.w3.org/TR/css-values-4/#calc-func
+/// @link   https://www.w3.org/TR/css-values-4/#comp-func
+/// 
+/// @param  {Calculation}   $calc                       - A calculation value.
+/// @param  {Boolean}       $strict-mode [%derived%]    - Optionally catch errors and return them as values without stopping compilation.
+/// @param  {*}             $default-value [null]       - Default return value when running in non-strict mode.
+/// @return {String}        - Returns a quoted string containing the name of the function, such as "calc", "min", "max", etc.
+/// 
+/// @group  api
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Boolean}   settings.$strict-mode
+/// @require    {Function}  map.has-key
+/// @require    {Function}  map.get
+/// @require    {Function}  string.quote
+/// @require    {Function}  throw.parameter-type
+/// @require    {Function}  keywords.keywords
+/// @require    {Function}  type-of.type-of
+/// @require    {Function}  to-string.to-string
+/// @require    {Function}  private.calc-name
+/// 
+@function calc-name($calc...) {
+    $keywords: keywords.keywords($calc);
+
+    $catch: settings.$strict-mode;
+    @if (map.has-key($keywords, "strict-mode")) {
+        $_catch: map.get($keywords, "strict-mode");
+        @if (type-of.type-of($_catch) == "bool") {
+            $catch: $_catch;
+        }
+    }
+
+    @if (type-of.type-of($calc) != "calculation") {
+        @if (map.has-key($keywords, "default-value")) {
+            @return string.quote(to-string.to-string(map.get($keywords, "default-value")));
+        } @else {
+            @return throw.parameter-type("calc-name", "calc", $calc, "calculation", $strict-mode: $catch, $message: "Given calculation value, such as `calc()`, `min()`, `max()`, or `clamp()`.");
+        }
+    }
+
+    @return private.calc-name($calc);
+}

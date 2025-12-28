@@ -1,0 +1,40 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/meta";
+
+
+/// 
+/// Retrieve the name of a CSS calculation function (like `calc()`, `min()`, `max()`, or `clamp()`) as a quoted string.
+///  
+/// @link   https://www.w3.org/TR/css-values-4/#calc-func
+/// @link   https://www.w3.org/TR/css-values-4/#comp-func
+/// 
+/// @param  {Calculation}   $calc  - A calculation value.
+/// @return {String}        - Returns a quoted string containing the name of the function, such as "calc", "min", "max", etc.
+/// 
+/// @group  alapnian-sass-meta
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  meta.calc-name
+/// 
+@function calc-name($calc) {
+    @return meta.calc-name($calc);
+}
