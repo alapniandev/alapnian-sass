@@ -1,0 +1,38 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/meta";
+
+
+/// 
+/// Returns a string representation of $value.
+/// Returns a representation of any Sass value, not just those that can be represented in CSS. As such, its return value is not guaranteed to be valid CSS.
+/// 
+/// @param  {String}    $value  - It accepts a single parameter, $value, which can be any valid Sass data type (number, string, color, list, map, etc.).
+/// @return {String}    - Returns a string representation of the given $value exactly as it would be written in valid Sass syntax, including quotation marks for quoted strings.
+/// 
+/// @group  alapnian-sass-meta
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  meta.inspect
+/// 
+@function inspect($value) {
+    @return meta.inspect($value);
+}
