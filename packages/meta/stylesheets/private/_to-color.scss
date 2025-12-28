@@ -19,6 +19,8 @@
 @use "../../helpers/string";
 @use "../../helpers/list";
 @use "../../helpers/map";
+@use "../../helpers/math";
+@use "internal/utils";
 @use "../settings";
 @use "hex-to-decimal";
 @use "to-number";
@@ -26,215 +28,324 @@
 
 
 /// 
-/// Cast a string into a hexadecimal color.
+/// Dissect the color string (modern/legacy) into a map containing the values ​​of each channel.
 /// 
-/// @param  {String}            $string - The string value.
-/// @return {Color | String}    - Return string or hex color depending on the match.
+/// @param  {String}    $string - Raw color string (example: "rgb(19, 7, 24)").
+/// @param  {List}      $keys   - List of channel keys (example: "r", "g", "b").
+/// @return {Map}       - The map contains a string of values ​​for each channel including alpha ("a").
 /// 
 /// @group  alapnian-sass-meta
 /// @access private
 /// @since  0.0.0
 /// @author Alapnian Sass Dev <sassdev@alapnian.com>
 /// 
-/// @require    {Boolean}   settings.$non-strict-default-color
+/// @require    {Function}  string.to-lower-case
+/// @require    {Function}  string.length
+/// @require    {Function}  string.slice
+/// @require    {Function}  list.join
+/// @require    {Function}  list.nth
+/// @require    {Function}  list.length
+/// @require    {Function}  list.index
+/// @require    {Function}  map.merge
+/// @require    {Function}  map.get
+/// 
+@function _parse-channels($string, $keys) {
+    $string: string.to-lower-case($string);
+    $length: string.length($string);
+    
+    $channels: ();
+    @each $key in $keys { $channels: map.merge($channels, ($key: "")); }
+    $channels: map.merge($channels, ("a": "")); 
+
+    $keys-plus-alpha: list.join($keys, ("a"));
+    $current-idx: 1;
+    $current-key: list.nth($keys-plus-alpha, $current-idx);
+    
+    $ignore: (" ", "(", ")", ",", "/", "r", "g", "b", "h", "s", "l", "w", "a", "c", "o", "k");
+
+    @for $i from 1 through $length {
+        $char: string.slice($string, $i, $i);
+        
+        @if ($char == "," or $char == "/" or ($char == " " and $i > 4)) {
+            @if ($current-idx < list.length($keys-plus-alpha)) {
+                $current-idx: $current-idx + 1;
+                $current-key: list.nth($keys-plus-alpha, $current-idx);
+            }
+        } 
+        @else if (not list.index($ignore, $char)) {
+            $val: map.get($channels, $current-key);
+            $channels: map.merge($channels, ($current-key: $val + $char));
+        }
+    }
+    @return $channels;
+}
+
+/// 
+/// Converts a hexadecimal string to a Sass color object.
+/// 
+/// @param  {String}    $string - Hex String (example: "#ffffffff" or "#ffffff" or "#fff").
+/// @return {Color}     - Sass color objects.
+/// 
+/// @group  alapnian-sass-meta
+/// @access private
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Color}     settings.$non-strict-default-color
 /// @require    {Function}  string.to-lower-case
 /// @require    {Function}  string.length
 /// @require    {Function}  string.slice
 /// @require    {Function}  list.index
+/// @require    {Function}  math.div
 /// @require    {Function}  hex-to-decimal.hex-to-decimal
 /// 
 @function _from-hex($string) {
-    $r: "";
-    $g: "";
-    $b: "";
-
     $string: string.to-lower-case($string);
     $length: string.length($string);
+    $hex-space: ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f");
 
-    // List<string>
-    // See:
-    // https://drafts.csswg.org/css-color/#hex-notation
-    $hexadecimal-space: ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f');
-
-    $max: 2;
-    @if ($length == 4) {
-        $max: 1;
-    }
-
-    // If the length of the value is neither 4, nor 7, it cannot be a valid
-    // hexadecimal triplet, therefore we warn and return the default color value
-    // (or throw in strict mode).
-    @if ($length != 4 and $length != 7) {
+    // Validate: #RGB (4), #RGBA (5), #RRGGBB (7), #RRGGBBAA (9)
+    @if list.index((4, 5, 7, 9), $length) == null {
         @return settings.$non-strict-default-color;
     }
 
-    // Loop through the characters from the value, starting from the second one
-    // to omit the initial hash.
+    $r: "";
+    $g: "";
+    $b: "";
+    $b: "";
+
+    $max: 2;
+    @if ($length == 4 or $length == 5) {
+        $max: 1;
+    }
+
     @for $i from 2 through $length {
         $char: string.slice($string, $i, $i);
 
-        // If the character is not part of the hexadecimal space, the color cannot
-        // be a valid hexadecimal triplet, therefore we warn and return the default
-        // color value (or throw in strict mode).
-        @if not list.index($hexadecimal-space, $char) {
+        @if not list.index($hex-space, $char) {
             @return settings.$non-strict-default-color;
         }
 
         @if (string.length($r) < $max) {
-            $r: ($r + $char);
-        } @else if (string.length($g) < $max) {
-            $g: ($g + $char);
-        } @else if (string.length($b) < $max) {
-            $b: ($b + $char);
+            $r: $r + $char;
+        }
+        @else if (string.length($g) < $max) {
+            $g: $g + $char;
+        }
+        @else if (string.length($b) < $max) {
+            $b: $b + $char;
+        }
+        @else if (string.length($a) < $max) {
+            $a: $a + $char;
         }
     }
 
-    // If the triplet is a short one, duplicated each found valud to compose a
-    // long version, necessary for the _sc-hex-to-dec(..) calls.
-    @if $length == 4 {
+    @if ($max == 1) {
         $r: $r + $r;
         $g: $g + $g;
         $b: $b + $b;
-    }
-
-    @return rgb(hex-to-decimal.hex-to-decimal($r), hex-to-decimal.hex-to-decimal($g), hex-to-decimal.hex-to-decimal($b));
-}
-
-/// 
-/// Cast a string representation of a `hsl(...)` call into a color.
-/// 
-/// @param  {String}    $string - The string value.
-/// @return {Color}     - Return HSL or HSLA color model.
-/// 
-/// @group  alapnian-sass-meta
-/// @access private
-/// @since  0.0.0
-/// @author Alapnian Sass Dev <sassdev@alapnian.com>
-/// 
-/// @require    {Function}  string.to-lower-case
-/// @require    {Function}  string.length
-/// @require    {Function}  string.slice
-/// @require    {Function}  map.keys
-/// @require    {Function}  map.get
-/// @require    {Function}  map.merge
-/// @require    {Function}  list.join
-/// @require    {Function}  list.nth
-/// @require    {Function}  list.index
-/// @require    {Function}  to-number.to-number
-/// 
-@function _from-hsl($string) {
-    $string: string.to-lower-case($string);
-    $length: string.length($string);
-
-    $channels:          ("h": "", "s": "", "l": "");
-    $channel-keys:      map.keys($channels);
-    $discarded-chars:   list.join($channel-keys, (" ", "(", ")"));
-    $current-channel:   list.nth($channel-keys, 1);
-
-    @for $i from 1 through $length {
-        $char: string.slice($string, $i, $i);
-
-        // If the character is neither the part of the function name, nor a space or
-        // a parenthese, we proceed further.
-        @if (not list.index($discarded-chars, $char)) {
-            // If the current character is a comma, it means we change the current
-            // channel to the next one.
-            @if ($char == ",") {
-                $current-channel-index: list.index($channel-keys, $current-channel);
-                $current-channel: list.nth($channel-keys, $current-channel-index + 1);
-            }
-            // If the current character is not a comma, it means it is part of the
-            // value for the current channel and therefore should be saved.
-            @else {
-                $current-channel-value: map.get($channels, $current-channel);
-                $channels: map.merge($channels, ($current-channel: $current-channel-value + $char));
-            }
+        @if ($a != "") {
+            $a: $a + $a;
         }
     }
 
-    $hue: to-number.to-number(map.get($channels, "h"));
-    $saturation: to-number.to-number(map.get($channels, "s"));
-    $lightness: to-number.to-number(map.get($channels, "l"));
-    $alpha: map.get($channels, "a");
-
-    // If there is no alpha channel registered, return a classic hsl(..) call.  
-    @if ($alpha == "") {
-        @return hsl($hue, $saturation * 1%, $lightness * 1%);
+    @if ($a == "") {
+        @return rgb(hex-to-decimal.hex-to-decimal($r), hex-to-decimal.hex-to-decimal($g), hex-to-decimal.hex-to-decimal($b));
     }
 
-    // If there is a registered alpha channel, return a hsla(..) call.  
-    @return hsla($hue, $saturation * 1%, $lightness * 1%, to-number.to-number($alpha));
+    @return rgba(hex-to-decimal.hex-to-decimal($r), hex-to-decimal.hex-to-decimal($g), hex-to-decimal.hex-to-decimal($b), math.div(hex-to-decimal.hex-to-decimal($b), 255));
 }
 
 /// 
-/// Cast a string representation of a rgb(...) call into a color.
+/// Converts an RGB/RGBA string to a Sass color object.
 /// 
-/// @param  {String}    $string - The string value.
-/// @return {Color}     - Return RGB or RGBA color model.
+/// @param  {String}    $string - String format rgb() or rgba().
+/// @return {Color}     - Sass color objects.
 /// 
 /// @group  alapnian-sass-meta
 /// @access private
 /// @since  0.0.0
 /// @author Alapnian Sass Dev <sassdev@alapnian.com>
 /// 
-/// @require    {Function}  string.to-lower-case
-/// @require    {Function}  string.length
-/// @require    {Function}  string.slice
-/// @require    {Function}  map.keys
-/// @require    {Function}  map.get
-/// @require    {Function}  map.merge
-/// @require    {Function}  list.join
-/// @require    {Function}  list.nth
-/// @require    {Function}  list.index
-/// @require    {Function}  to-number.to-number
+/// @require {Function} map.get
+/// @require {Function} to-number.to-number
+/// @require {Function} _parse-channels
 /// 
 @function _from-rgb($string) {
-    $string: string.to-lower-case($string);
-    $length: string.length($string);
+    $c: _parse-channels($string, ("r", "g", "b"));
 
-    $channels:          ("r": "", "g": "", "b": "");
-    $channel-keys:      map.keys($channels);
-    $discarded-chars:   list.join($channel-keys, (" ", "(", ")"));
-    $current-channel:   list.nth($channel-keys, 1);
+    $r: to-number.to-number(map.get($c, "r"));
+    $g: to-number.to-number(map.get($c, "g"));
+    $b: to-number.to-number(map.get($c, "b"));
+    $a: map.get($c, "a");
 
-    @for $i from 1 through $length {
-        $char: string.slice($value, $i, $i);
-
-        // If the character is neither the part of the function name, nor a space or
-        // a parenthese, we proceed further.
-        @if not list.index($discarded-chars, $char) {
-            // If the current character is a comma, it means we change the current
-            // channel to the next one.
-            @if ($char == ',') {
-                $current-channel-index: list.index($channel-keys, $current-channel);
-                $current-channel:       list.nth($channel-keys, $current-channel-index + 1);
-            }
-        
-            // If the current character is not a comma, it means it is part of the
-            // value for the current channel and therefore should be saved.
-            @else {
-                $current-channel-value: map.get($channels, $current-channel);
-                $channels:              map.merge($channels, ($current-channel: $current-channel-value + $char));
-            }
-        }
-    }
-    
-    $red: to-number.to-number(map.get($channels, "r"));
-    $green: to-number.to-number(map.get($channels, "g"));
-    $blue: to-number.to-number(map.get($channels, "b"));
-    $alpha: map.get($channels, "a");
-    
-    // If there is no alpha channel registered, return a classic hsl(..) call.  
-    @if ($alpha == "") {
-        @return rgb($red, $green, $blue);
+    @if ($a == "") {
+        @return rgb($r, $g, $b);
     }
 
-    // If there is a registered alpha channel, return a rgba(..) call.    
-    @return rgba($red, $green, $blue, to-number.to-number($alpha));
+    @return rgba($r, $g, $b, to-number.to-number($a));
+}
+
+/// 
+/// Converts an HSL/HSLA string to a Sass color object.
+/// 
+/// @param  {String}    $string - String format hsl() or hsla().
+/// @return {Color}     - Sass color objects.
+/// 
+/// @group  alapnian-sass-meta
+/// @access private
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require {Function} map.get
+/// @require {Function} to-number.to-number
+/// @require {Function} _parse-channels
+/// 
+@function _from-hsl($string) {
+    $c: _parse-channels($string, ("h", "s", "l"));
+
+    $h: to-number.to-number(map.get($c, "h"));
+    $s: to-number.to-number(map.get($c, "s")) * 1%;
+    $l: to-number.to-number(map.get($c, "l")) * 1%;
+    $a: map.get($c, "a");
+
+    @if ($a == "") {
+        @return hsl($h, $s, $l);
+    }
+
+    @return hsla($h, $s, $l, to-number.to-number($a));
+}
+
+/// 
+/// Converts an HWB string to a Sass color object.
+/// 
+/// @param  {String}    $string - String format hwb().
+/// @return {Color}     - Sass color objects.
+/// 
+/// @group  alapnian-sass-meta
+/// @access private
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require {Function} map.get
+/// @require {Function} to-number.to-number
+/// @require {Function} _parse-channels
+/// 
+@function _from-hwb($string) {
+    $c: _parse-channels($string, ("h", "w", "b"));
+
+    $h: to-number.to-number(map.get($c, "h"));
+    $w: to-number.to-number(map.get($c, "w")) * 1%;
+    $b: to-number.to-number(map.get($c, "b")) * 1%;
+
+    @return hwb($h, $w, $b);
+}
+
+/// 
+/// Converts an Lab string to a Sass color object.
+/// 
+/// @param  {String}    $string - String format lab().
+/// @return {Color}     - Sass color objects.
+/// 
+/// @group  alapnian-sass-meta
+/// @access private
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require {Function} map.get
+/// @require {Function} to-number.to-number
+/// @require {Function} _parse-channels
+/// 
+@function _from-lab($string) {
+    $c: _parse-channels($string, ("l", "a-val", "b-val"));
+
+    $l: to-number.to-number(map.get($c, "l")) * 1%;
+    $a-v: to-number.to-number(map.get($c, "a-val"));
+    $b-v: to-number.to-number(map.get($c, "b-val"));
+    
+    @return lab($l, $a-v, $b-v);
+}
+
+/// 
+/// Converts an LCH string to a Sass color object.
+/// 
+/// @param  {String}    $string - String format lch().
+/// @return {Color}     - Sass color objects.
+/// 
+/// @group  alapnian-sass-meta
+/// @access private
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require {Function} map.get
+/// @require {Function} to-number.to-number
+/// @require {Function} _parse-channels
+/// 
+@function _from-lch($string) {
+    $c: _parse-channels($string, ("l", "c", "h"));
+
+    $l:         to-number.to-number(map.get($c, "l")) * 1%;
+    $chroma:    to-number.to-number(map.get($c, "c"));
+    $hue:       to-number.to-number(map.get($c, "h"));
+
+    @return lch($l, $chroma, $hue);
+}
+
+/// 
+/// Converts an Oklab string to a Sass color object.
+/// 
+/// @param  {String}    $string - String format oklab().
+/// @return {Color}     - Sass color objects.
+/// 
+/// @group  alapnian-sass-meta
+/// @access private
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require {Function} map.get
+/// @require {Function} to-number.to-number
+/// @require {Function} _parse-channels
+/// 
+@function _from-oklab($string) {
+    $c: _parse-channels($string, ("l", "a-val", "b-val"));
+
+    $l:     to-number.to-number(map.get($c, "l")) * 1%;
+    $a-v:   to-number.to-number(map.get($c, "a-val"));
+    $b-v:   to-number.to-number(map.get($c, "b-val"));
+
+    @return oklab($l, $a-v, $b-v);
+}
+
+/// 
+/// Converts an OkLCh string to a Sass color object.
+/// 
+/// @param  {String}    $string - String format oklch().
+/// @return {Color}     - Sass color objects.
+/// 
+/// @group  alapnian-sass-meta
+/// @access private
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require {Function} map.get
+/// @require {Function} to-number.to-number
+/// @require {Function} _parse-channels
+/// 
+@function _from-oklch($string) {
+    $c: _parse-channels($string, ("l", "c", "h"));
+
+    $l:         to-number.to-number(map.get($c, "l")) * 1%;
+    $chroma:    to-number.to-number(map.get($c, "c"));
+    $hue:       to-number.to-number(map.get($c, "h"));
+
+    @return oklch($l, $chroma, $hue);
 }
 
 /// 
 /// Convert `$value` to color value.
+/// Supports Hex (#RGB | #RRGGBB | #RRGGBBAA), RGB/RGBA, HSL/HSLA, HWB, Lab, LCH, Oklab, and OkLCh formats.
+/// 
+/// @link   https://drafts.csswg.org/css-color
 /// 
 /// @param  {*}     $value  - Value to cast.
 /// @return {Color} - Return color value.
@@ -244,48 +355,46 @@
 /// @since  0.0.0
 /// @author Alapnian Sass Dev <sassdev@alapnian.com>
 /// 
+/// @require    {Color}     settings.$non-strict-default-color
 /// @require    {Function}  string.to-lower-case
 /// @require    {Function}  string.slice
 /// @require    {Function}  map.has-key
 /// @require    {Function}  map.get
-/// @require    {Function}  type-of.type-of
+/// @require    {Function}  utils.trim
 /// @require    {Function}  _from-hex
 /// @require    {Function}  _from-rgb
 /// @require    {Function}  _from-hsl
+/// @require    {Function}  _from-hwb
+/// @require    {Function}  _from-lch
+/// @require    {Function}  _from-oklab
+/// @require    {Function}  _from-oklch
+/// @require    {Function}  type-of.type-of
 /// 
 @function to-color($value) {
-    $value: string.to-lower-case($value);
-    $type:  type-of.type-of($value);
+    $type: type-of.type-of($value);
 
-    // If the value is already a color, we can safely return it.
-    @if ($type == "color") {
-        @return $value;
-    }
+    @if ($type == "color") { @return $value; }
+    @if ($type != "string") { @return settings.$non-strict-default-color; }
 
-    // If the type is not a string, there is no way we can convert it to a color,
-    // so we warn and return the default color value (or throw in strict mode).
-    @if ($type != "string") {
-        @return settings.$non-strict-default-color;
-    }
+    $value: string.to-lower-case(utils.trim($value));
+    
+    $keywords: ("transparent": transparent, "aliceblue": aliceblue,	"antiquewhite": antiquewhite,	"aqua": aqua,	"aquamarine": aquamarine,	"azure": azure,	"beige": beige,	"bisque": bisque,	"black": black,	"blanchedalmond": blanchedalmond,	"blue": blue,	"blueviolet": blueviolet,	"brown": brown,	"burlywood": burlywood,	"cadetblue": cadetblue,	"chartreuse": chartreuse,	"chocolate": chocolate,	"coral": coral,	"cornflowerblue": cornflowerblue,	"cornsilk": cornsilk,	"crimson": crimson,	"cyan": cyan,	"darkblue": darkblue,	"darkcyan": darkcyan,	"darkgoldenrod": darkgoldenrod,	"darkgray": darkgray,	"darkgreen": darkgreen,	"darkgrey": darkgrey,	"darkkhaki": darkkhaki,	"darkmagenta": darkmagenta,	"darkolivegreen": darkolivegreen,	"darkorange": darkorange,	"darkorchid": darkorchid,	"darkred": darkred,	"darksalmon": darksalmon,	"darkseagreen": darkseagreen,	"darkslateblue": darkslateblue,	"darkslategray": darkslategray,	"darkslategrey": darkslategrey,	"darkturquoise": darkturquoise,	"darkviolet": darkviolet,	"deeppink": deeppink,	"deepskyblue": deepskyblue,	"dimgray": dimgray,	"dimgrey": dimgrey,	"dodgerblue": dodgerblue,	"firebrick": firebrick,	"floralwhite": floralwhite,	"forestgreen": forestgreen,	"fuchsia": fuchsia,	"gainsboro": gainsboro,	"ghostwhite": ghostwhite,	"gold": gold,	"goldenrod": goldenrod,	"gray": gray,	"green": green,	"greenyellow": greenyellow,	"grey": grey,	"honeydew": honeydew,	"hotpink": hotpink,	"indianred": indianred,	"indigo": indigo,	"ivory": ivory,	"khaki": khaki,	"lavender": lavender,	"lavenderblush": lavenderblush,	"lawngreen": lawngreen,	"lemonchiffon": lemonchiffon,	"lightblue": lightblue,	"lightcoral": lightcoral,	"lightcyan": lightcyan,	"lightgoldenrodyellow": lightgoldenrodyellow,	"lightgray": lightgray,	"lightgreen": lightgreen,	"lightgrey": lightgrey,	"lightpink": lightpink,	"lightsalmon": lightsalmon,	"lightseagreen": lightseagreen,	"lightskyblue": lightskyblue,	"lightslategray": lightslategray,	"lightslategrey": lightslategrey,	"lightsteelblue": lightsteelblue,	"lightyellow": lightyellow,	"lime": lime,	"limegreen": limegreen,	"linen": linen,	"magenta": magenta,	"maroon": maroon,	"mediumaquamarine": mediumaquamarine,	"mediumblue": mediumblue,	"mediumorchid": mediumorchid,	"mediumpurple": mediumpurple,	"mediumseagreen": mediumseagreen,	"mediumslateblue": mediumslateblue,	"mediumspringgreen": mediumspringgreen,	"mediumturquoise": mediumturquoise,	"mediumvioletred": mediumvioletred,	"midnightblue": midnightblue,	"mintcream": mintcream,	"mistyrose": mistyrose,	"moccasin": moccasin,	"navajowhite": navajowhite,	"navy": navy,	"oldlace": oldlace,	"olive": olive,	"olivedrab": olivedrab,	"orange": orange,	"orangered": orangered,	"orchid": orchid,	"palegoldenrod": palegoldenrod,	"palegreen": palegreen,	"paleturquoise": paleturquoise,	"palevioletred": palevioletred,	"papayawhip": papayawhip,	"peachpuff": peachpuff,	"peru": peru,	"pink": pink,	"plum": plum,	"powderblue": powderblue,	"purple": purple,	"rebeccapurple": rebeccapurple,	"red": red,	"rosybrown": rosybrown,	"royalblue": royalblue,	"saddlebrown": saddlebrown,	"salmon": salmon,	"sandybrown": sandybrown,	"seagreen": seagreen,	"seashell": seashell,	"sienna": sienna,	"silver": silver,	"skyblue": skyblue,	"slateblue": slateblue,	"slategray": slategray,	"slategrey": slategrey,	"snow": snow,	"springgreen": springgreen,	"steelblue": steelblue,	"tan": tan,	"teal": teal,	"thistle": thistle,	"tomato": tomato,	"turquoise": turquoise,	"violet": violet,	"wheat": wheat,	"white": white,	"whitesmoke": whitesmoke,	"yellow": yellow,	"yellowgreen": yellowgreen);
 
-    // Map<string, color>
-    // See:
-    // https://drafts.csswg.org/css-color/#named-colors
-    $color-keywords: ("transparent": transparent, "aliceblue": aliceblue,	"antiquewhite": antiquewhite,	"aqua": aqua,	"aquamarine": aquamarine,	"azure": azure,	"beige": beige,	"bisque": bisque,	"black": black,	"blanchedalmond": blanchedalmond,	"blue": blue,	"blueviolet": blueviolet,	"brown": brown,	"burlywood": burlywood,	"cadetblue": cadetblue,	"chartreuse": chartreuse,	"chocolate": chocolate,	"coral": coral,	"cornflowerblue": cornflowerblue,	"cornsilk": cornsilk,	"crimson": crimson,	"cyan": cyan,	"darkblue": darkblue,	"darkcyan": darkcyan,	"darkgoldenrod": darkgoldenrod,	"darkgray": darkgray,	"darkgreen": darkgreen,	"darkgrey": darkgrey,	"darkkhaki": darkkhaki,	"darkmagenta": darkmagenta,	"darkolivegreen": darkolivegreen,	"darkorange": darkorange,	"darkorchid": darkorchid,	"darkred": darkred,	"darksalmon": darksalmon,	"darkseagreen": darkseagreen,	"darkslateblue": darkslateblue,	"darkslategray": darkslategray,	"darkslategrey": darkslategrey,	"darkturquoise": darkturquoise,	"darkviolet": darkviolet,	"deeppink": deeppink,	"deepskyblue": deepskyblue,	"dimgray": dimgray,	"dimgrey": dimgrey,	"dodgerblue": dodgerblue,	"firebrick": firebrick,	"floralwhite": floralwhite,	"forestgreen": forestgreen,	"fuchsia": fuchsia,	"gainsboro": gainsboro,	"ghostwhite": ghostwhite,	"gold": gold,	"goldenrod": goldenrod,	"gray": gray,	"green": green,	"greenyellow": greenyellow,	"grey": grey,	"honeydew": honeydew,	"hotpink": hotpink,	"indianred": indianred,	"indigo": indigo,	"ivory": ivory,	"khaki": khaki,	"lavender": lavender,	"lavenderblush": lavenderblush,	"lawngreen": lawngreen,	"lemonchiffon": lemonchiffon,	"lightblue": lightblue,	"lightcoral": lightcoral,	"lightcyan": lightcyan,	"lightgoldenrodyellow": lightgoldenrodyellow,	"lightgray": lightgray,	"lightgreen": lightgreen,	"lightgrey": lightgrey,	"lightpink": lightpink,	"lightsalmon": lightsalmon,	"lightseagreen": lightseagreen,	"lightskyblue": lightskyblue,	"lightslategray": lightslategray,	"lightslategrey": lightslategrey,	"lightsteelblue": lightsteelblue,	"lightyellow": lightyellow,	"lime": lime,	"limegreen": limegreen,	"linen": linen,	"magenta": magenta,	"maroon": maroon,	"mediumaquamarine": mediumaquamarine,	"mediumblue": mediumblue,	"mediumorchid": mediumorchid,	"mediumpurple": mediumpurple,	"mediumseagreen": mediumseagreen,	"mediumslateblue": mediumslateblue,	"mediumspringgreen": mediumspringgreen,	"mediumturquoise": mediumturquoise,	"mediumvioletred": mediumvioletred,	"midnightblue": midnightblue,	"mintcream": mintcream,	"mistyrose": mistyrose,	"moccasin": moccasin,	"navajowhite": navajowhite,	"navy": navy,	"oldlace": oldlace,	"olive": olive,	"olivedrab": olivedrab,	"orange": orange,	"orangered": orangered,	"orchid": orchid,	"palegoldenrod": palegoldenrod,	"palegreen": palegreen,	"paleturquoise": paleturquoise,	"palevioletred": palevioletred,	"papayawhip": papayawhip,	"peachpuff": peachpuff,	"peru": peru,	"pink": pink,	"plum": plum,	"powderblue": powderblue,	"purple": purple,	"rebeccapurple": rebeccapurple,	"red": red,	"rosybrown": rosybrown,	"royalblue": royalblue,	"saddlebrown": saddlebrown,	"salmon": salmon,	"sandybrown": sandybrown,	"seagreen": seagreen,	"seashell": seashell,	"sienna": sienna,	"silver": silver,	"skyblue": skyblue,	"slateblue": slateblue,	"slategray": slategray,	"slategrey": slategrey,	"snow": snow,	"springgreen": springgreen,	"steelblue": steelblue,	"tan": tan,	"teal": teal,	"thistle": thistle,	"tomato": tomato,	"turquoise": turquoise,	"violet": violet,	"wheat": wheat,	"white": white,	"whitesmoke": whitesmoke,	"yellow": yellow,	"yellowgreen": yellowgreen);
+    @if map.has-key($keywords, $value) { @return map.get($keywords, $value); }
 
-    @if (map.has-key($color-keywords, $value)) {
-        @return map.get($color-keywords, $value);
-    }
-    @else if (string.slice($value, 1, 1) == "#") {
-        @return _from-hex($value);
-    }
-    @else if (string.slice($value, 1, 3) == "rgb") {
-        @return _from-rgb($value);
-    }
-    @else if (string.slice($value, 1, 3) == "rgb") {
-        @return _from-rgb($value);
-    }
+    // Deteksi Format Berdasarkan Prefix
+    $p1: string.slice($value, 1, 1);
+    $p3: string.slice($value, 1, 3);
+    $p5: string.slice($value, 1, 5);
 
-    // If everything has failed, arn and return the default color value.
+    @if ($p1 == "#") { @return _from-hex($value); }
+    @if ($p3 == "rgb") { @return _from-rgb($value); }
+    @if ($p3 == "hsl") { @return _from-hsl($value); }
+    @if ($p3 == "hwb") { @return _from-hwb($value); }
+    @if ($p3 == "lab") { @return _from-lab($value); }
+    @if ($p3 == "lch") { @return _from-lch($value); }
+    @if ($p5 == "oklab") { @return _from-oklab($value); }
+    @if ($p5 == "oklch") { @return _from-oklch($value); }
+
     @return settings.$non-strict-default-color;
 }
