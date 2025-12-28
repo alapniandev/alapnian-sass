@@ -1,0 +1,37 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/meta";
+
+
+///
+/// Returns whether the given mixin value can accept a `@content` block.
+///
+/// @param  {Mixin}     $mixin  - A mixin value, usually obtained using the `meta.get-mixin()` function.
+/// @return {Boolean}   - Returns `true` if the mixin has the ability to accept a content block, and `false` otherwise.
+///
+/// @group  alapnian-sass-meta
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+///
+/// @require    {Function}  meta.accepts-content
+///
+@function accepts-content($mixin) {
+    @return meta.accepts-content($mixin);
+}

@@ -1,0 +1,72 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/throw";
+@use "../../helpers/map";
+@use "../private/keywords";
+@use "../private/type-of";
+@use "../private/to-bool";
+@use "../private/to-string";
+@use "../private/accepts-content" as private;
+@use "../settings";
+
+
+/// 
+/// Returns whether the given mixin value can accept a `@content` block.
+/// 
+/// @param  {Mixin}     $mixin                      - A mixin value, usually obtained using the `meta.get-mixin()` function.
+/// @param  {Boolean}   $strict-mode [%derived%]    - Optionally catch errors and return them as values without stopping compilation.
+/// @param  {*}         $default-value [null]       - Default return value when running in non-strict mode.
+/// @return {Boolean}   - Returns `true` if the mixin has the ability to accept a `@content` block, and `false` otherwise.
+/// 
+/// @group  api
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Boolean}   settings.$strict-mode
+/// @require    {Function}  map.has-key
+/// @require    {Function}  map.get
+/// @require    {Function}  throw.parameter-type
+/// @require    {Function}  type-of.type-of
+/// @require    {Function}  keywords.keywords
+/// @require    {Function}  to-bool.to-bool
+/// @require    {Function}  to-string.to-string
+/// @require    {Function}  private.accepts-content
+/// 
+@function accepts-content($mixin...) {
+    $keywords: keywords.keywords($mixin);
+
+    $catch: settings.$strict-mode;
+    @if (map.has-key($keywords, "strict-mode")) {
+        $_catch: map.get($keywords, "strict-mode");
+        @if (type-of.type-of($_catch) == "bool") {
+            $catch: $_catch;
+        }
+    }
+
+    @if (type-of.type-of($mixin) != "mixin") {
+        @if (map.has-key($keywords, "default-value")) {
+            @return to-bool.to-bool(map.get($keywords, "default-value"));
+        } @else {
+            @return throw.parameter-type("accepts-content", "mixin", $mixin, "mixin", $strict-mode: $catch, $message: 'Use the `meta.get-mixin("#{to-string.to-string($mixin)}")` or `get-mixin("#{to-string.to-string($mixin)}")` function.');
+        }
+    }
+
+    @return private.accepts-content($mixin);
+}
