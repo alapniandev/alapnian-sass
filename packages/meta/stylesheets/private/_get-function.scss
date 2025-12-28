@@ -1,0 +1,42 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/meta";
+
+
+/// 
+/// Retrieves a function value by its name, allowing you to pass functions as arguments to higher-order functions or call them dynamically.
+/// 
+/// @link   https://sass-lang.com/documentation/modules#global-functions
+/// @link   https://sass-lang.com/documentation/at-rules/function/#plain-css-functions
+/// 
+/// @param  {String}    $name           - The name of the function you want to retrieve.
+/// @param  {Boolean}   $css [false]    - A boolean that is set to `true` if the function being retrieved is a plain CSS function (e.g., `rgb()`).
+/// @param  {String}    $module [null]  - A string matching the namespace of a `@use` rule in the current file. If `null`, it looks for a function without a namespace or in the global scope.
+/// @return {Function}  - Returns the function value named $name.
+/// 
+/// @group  alapnian-sass-meta
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  meta.get-function
+/// 
+@function get-function($name, $css: false, $module: null) {
+    @return meta.get-function($name, $css, $module);
+}

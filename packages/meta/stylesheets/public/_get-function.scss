@@ -1,0 +1,100 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/map";
+@use "../../helpers/throw";
+@use "../private/keywords";
+@use "../private/type-of";
+@use "../private/function-exists";
+@use "../private/get-function" as private;
+@use "../settings";
+
+
+/// 
+/// Retrieves a function value by its name, allowing you to pass functions as arguments to higher-order functions or call them dynamically.
+/// 
+/// @link   https://sass-lang.com/documentation/modules#global-functions
+/// @link   https://sass-lang.com/documentation/at-rules/function/#plain-css-functions
+/// 
+/// @param  {String}    $name                       - The name of the function you want to retrieve.
+/// @param  {Boolean}   $css [false]                - A boolean that is set to `true` if the function being retrieved is a plain CSS function (e.g., `rgb()`).
+/// @param  {String}    $module [null]              - A string matching the namespace of a `@use` rule in the current file. If `null`, it looks for a function without a namespace or in the global scope.
+/// @param  {Boolean}   $strict-mode [%derived%]    - Optionally catch errors and return them as values without stopping compilation.
+/// @param  {*}         $default-value [null]       - Default return value when running in non-strict mode.
+/// @return {Function}  - Returns the function value named $name.
+/// 
+/// @group  api
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Boolean}   settings.$strict-mode
+/// @require    {Function}  map.has-key
+/// @require    {Function}  map.get
+/// @require    {Function}  throw.parameter
+/// @require    {Function}  throw.parameter-type
+/// @require    {Function}  keywords.keywords
+/// @require    {Function}  type-of.type-of
+/// @require    {Function}  function-exists.function-exists
+/// @require    {Function}  private.get-function
+/// 
+@function get-function($name, $css: false, $module...) {
+    $keywords: keywords.keywords($module);
+
+    $catch: settings.$strict-mode;
+    @if (map.has-key($keywords, "strict-mode")) {
+        $_catch: map.get($keywords, "strict-mode");
+        @if (type-of.type-of($_catch) == "bool") {
+            $catch: $_catch;
+        }
+    }
+
+    @if (type-of.type-of($name) != "string") {
+        @if (map.has-key($keywords, "default-value")) {
+            @return map.get($keywords, "default-value");
+        } @else {
+            @return throw.parameter-type("get-function", "name", $name, "string", $strict-mode: $catch);
+        }
+    }
+
+    @if (type-of.type-of($css) != "bool") {
+        @if (map.has-key($keywords, "default-value")) {
+            @return map.get($keywords, "default-value");
+        } @else {
+            @return throw.parameter-type("get-function", "css", $css, "bool", $strict-mode: $catch);
+        }
+    }
+
+    @if (type-of.type-of($module) != "null" or type-of.type-of($module) != "string") {
+        @if (map.has-key($keywords, "default-value")) {
+            @return map.get($keywords, "default-value");
+        } @else {
+            @return throw.parameter-type("get-function", "module", $module, "null", "string", $strict-mode: $catch);
+        }
+    }
+
+    @if (not function-exists.function-exists($name, $module)) {
+        @if (map.has-key($keywords, "default-value")) {
+            @return map.get($keywords, "default-value");
+        } @else {
+            @return throw.parameter("`#{$name}` function not found.", "get-function", "name", $strict-mode: $catch);
+        }
+    }
+
+    @return private.get-function($name, $css, $module);
+}
