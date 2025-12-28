@@ -1,0 +1,28 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../stylesheets/settings";
+
+
+/// 
+/// Forward throw module provided by @alapnian-sass
+/// 
+/// Homepage:   https://module.alapnian.com/sass/throw
+/// Repo:       https://github.com/alapniandev/alapnian-sass/tree/main/packages/throw
+/// 
+@forward "@alapnian-sass/throw" with ($strict-mode: settings.$strict-mode);
