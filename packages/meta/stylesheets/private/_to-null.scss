@@ -1,0 +1,31 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+/// 
+/// Convert `$value` to `null` value.
+/// 
+/// @param  {*}         $value  - Value to cast.
+/// @return {Nullable}  - Return `null` value.
+/// 
+/// @group  alapnian-sass-meta
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+@function to-null($value) {
+    @return null;
+}

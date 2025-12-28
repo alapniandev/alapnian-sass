@@ -1,0 +1,56 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../private/to-null" as private;
+
+
+/// 
+/// Convert `$value` to null value.
+/// 
+/// @alias  null
+/// 
+/// @param  {*}         $value  - Value to cast.
+/// @return {Nullable}  - Return null value.
+/// 
+/// @group  api
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  private.to-null
+/// 
+@function to-null($value) {
+    @return private.to-null($value);
+}
+
+/// 
+/// Alias function of `meta.to-null()`.
+/// 
+/// @param  {*}         $value  - Value to cast.
+/// @return {Nullable}  - Return null value.
+/// 
+/// @group  api
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  private.to-null
+/// 
+@function null($value) {
+    @return private.to-null($value);
+}
