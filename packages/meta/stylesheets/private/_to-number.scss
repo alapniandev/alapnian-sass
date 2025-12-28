@@ -1,0 +1,223 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/string";
+@use "../../helpers/list";
+@use "../../helpers/map";
+@use "../../helpers/math";
+@use "../settings";
+@use "internal/utils";
+@use "type-of";
+
+
+/// 
+/// Finding the integer part of a stringified number
+/// 
+/// @param  {String}  $source   - String source.
+/// @param  {Number}  $pointer  - Current pointer.
+/// @return {List}    - Returns a list containing `List<new pointer, parsed number>`.
+/// 
+/// @group  alapnian-sass-meta
+/// @access private
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require  {Function}  string.to-lower-case
+/// @require  {Function}  string.length
+/// @require  {Function}  string.slice
+/// @require  {Function}  list.index
+/// 
+@function _find-integer($source, $pointer) {
+  $source: string.to-lower-case($source);
+  $length: string.length($source);
+  $numbers: ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+  $result: 0;
+
+  @while ($pointer <= $length) {
+    $token: string.slice($source, $pointer, $pointer);
+    $index: list.index($numbers, $token);
+
+    @if ($token == "-") {
+      // @continue
+    } @else if $index {
+      $result: ($result * 10) + ($index - 1);
+    } @else {
+      @return $pointer, $result;
+    }
+
+    $pointer: ($pointer + 1);
+  }
+
+  @return $pointer, $result;
+}
+
+/// 
+/// Finding the digits part of a stringified number.
+/// 
+/// @param  {String}  $source   - String source.
+/// @param  {Number}  $pointer  - Current pointer.
+/// @return {List}    - Returns a list containing `List<new pointer, parsed number>`.
+/// 
+/// @group  alapnian-sass-meta
+/// @access private
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require  {Function}  string.to-lower-case
+/// @require  {Function}  string.length
+/// @require  {Function}  string.slice
+/// @require  {Function}  list.index
+/// @require  {Function}  math.div
+/// 
+@function _find-digits($source, $pointer) {
+  $source: string.to-lower-case($source);
+  $length: string.length($source);
+  $numbers: ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+  $result: 0;
+  $runs: 1;
+
+  @while ($pointer <= $length) {
+    $token: string.slice($source, $pointer, $pointer);
+    $index: list.index($numbers, $token);
+
+    @if ($token == ".") {
+      // @continue
+    } @else if ($index and $index > 0) {
+      $runs: ($runs * 10);
+      $result: ($result * 10) + ($index - 1);
+    } @else {
+      @return $pointer, math.div($result, $runs);
+    }
+
+    $pointer: ($pointer + 1);
+  }
+
+  @return $pointer, math.div($result, $runs);
+}
+
+/// 
+/// Convert `$value` to number value.
+/// 
+/// @param  {*}         $value  - Value to cast.
+/// @return {Number}    - Return number value.
+/// 
+/// @group  alapnian-sass-meta
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Number}    settings.$non-strict-default-number
+/// @require    {Function}  string.slice
+/// @require    {Function}  string.length
+/// @require    {Function}  list.join
+/// @require    {Function}  list.index
+/// @require    {Function}  list.nth
+/// @require    {Function}  map.get
+/// @require    {Function}  utils.trim
+/// @require    {Function}  type-of.type-of
+/// @require    {Function}  _find-integer
+/// @require    {Function}  _find-digits
+/// 
+@function to-number($value) {
+    $type: type-of.type-of(utils.trim($value));
+
+    // If the value is already a number, we can safely return it.
+    @if ($type == 'number') {
+        @return $value;
+    }
+
+    // If the value is the `true` boolean, we return 1.
+    @if ($value == true)  {
+        @return 1;
+    }
+
+    // If the value is the `false` boolean, we return 0.
+    @if ($value == false) {
+        @return 0;
+    }
+
+    // If the type is not a string, there is no way we can convert it to a number,
+    // so return the default number value.
+    @if ($type != 'string') {
+        @return settings.$non-strict-default-number;
+    }
+
+    // At this point we have discarded all the edge cases so we can start trying
+    // to cast the value into a number.
+    $pointer: 1;
+    $result: 0;
+    $first-character: string.slice($value, $pointer, $pointer);
+    $allowed-first-character: list.join(('-', '.'), ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'));
+
+    // If value starts with neither a number nor a minus sign, it cannot be casted to 
+    // a number. Therefore return the default number value (or throw in strict mode).
+    @if not list.index($allowed-first-character, $first-character) {
+        @return settings.$non-strict-default-number;
+    }
+
+    // In case the value starts with a dot, we assume it is a float and pad it
+    // with a zero.
+    @if ($first-character == '.') {
+        $value: '0' + $value;
+    }
+
+    // We find the integer part of the value.
+    $find-integer: _find-integer($value, $pointer);
+    $pointer: list.nth($find-integer, 1);
+    $result: list.nth($find-integer, 2);
+
+    // If there still is a dot, it means we have to check for the digits part of
+    // the value.
+    @if (string.slice($value, $pointer, $pointer) == '.') {
+        $find-digits: _find-digits($value, $pointer);
+        $pointer: list.nth($find-digits, 1);
+        $digits: list.nth($find-digits, 2);
+        $result: ($result + $digits);
+    }
+
+    // If the first character is a minus symbol, it means the number is negative
+    // so we can multiply it per -1.
+    @if ($first-character == '-') {
+        $result: ($result * -1);
+    }
+
+    // If we are still not done with the evaluation, it means there could be a CSS
+    // unit, so we check for it.
+    @if ($pointer <= string.length($value)) {
+        // Map<string, number>
+        // See:
+        // https://www.w3.org/TR/css-values-4/#font-relative-lengths
+        // https://www.w3.org/TR/css-values-4/#viewport-relative-lengths
+        // https://www.w3.org/TR/css-values-4/#absolute-lengths
+        // https://www.w3.org/TR/css-values-4/#angles
+        // https://www.w3.org/TR/css-values-4/#time
+        // https://www.w3.org/TR/css-values-4/#frequency
+        // https://www.w3.org/TR/css-values-4/#resolution
+        $units-values: ("em": 1em, "rem": 1rem, "ex": 1ex, "rex": 1rex, "cap": 1cap, "rcap": 1rcap, "ch": 1ch, "rch": 1rch, "ic": 1ic, "ric": 1ric, "lh": 1lh, "rlh": 1rlh, "vw": 1vw, "svw": 1svw, "lvw": 1lvw, "dvw": 1dvw, "vh": 1vh, "svh": 1svh, "lvh": 1lvh, "dvh": 1dvh, "vi": 1vi, "svi": 1svi, "lvi": 1lvi, "dvi": 1dvi, "vb": 1vb, "svb": 1svb, "lvb": 1lvb, "dvb": 1dvb, "vmin": 1vmin, "svmin": 1svmin, "lvmin": 1lvmin, "dvmin": 1dvmin, "vmax": 1vmax, "svmax": 1svmax, "lvmax": 1lvmax, "dvmax": 1dvmax, "cm": 1cm, "mm": 1mm, "Q": 1Q, "in": 1in, "pt": 1pt, "pc": 1pc, "px": 1px, "deg": 1deg, "grad": 1grad, "rad": 1rad, "turn": 1turn, "s": 1s, "ms": 1ms, "Hz": 1Hz, "kHz": 1kHz, "dpi": 1dpi, "dpcm": 1dpcm, "dppx": 1dppx);
+        
+        $number: map.get($units-values, string.slice($value, $pointer));
+
+        @if not $number {
+            @return settings.$non-strict-default-number;
+        }
+
+        @return ($result * $number);
+    }
+
+    @return $result;
+}
