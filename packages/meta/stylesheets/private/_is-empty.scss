@@ -1,0 +1,41 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/list";
+
+
+/// 
+/// Check $value is empty.
+/// 
+/// @param  {*}         $value  - Value to check.
+/// @return {Boolean}   - Return true if $value is empty.
+/// 
+/// @group  alapnian-sass-meta
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+///  
+/// @require    {Function}  list.length 
+///  
+@function is-empty($value) {
+    @if (not $value or $value == null or $value == "" or $value == 0 or $value == () or list.length($value) == 0) {
+        @return true;
+    }
+
+    @return false;
+}
