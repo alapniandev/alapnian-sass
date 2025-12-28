@@ -1,0 +1,56 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../private/to-bool" as private;
+
+
+/// 
+/// Convert `$value` to boolean value.
+/// 
+/// @alias  bool
+/// 
+/// @param  {*}         $value  - Value to cast.
+/// @return {Boolean}   - Return boolean value.
+/// 
+/// @group  api
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  private.to-bool
+/// 
+@function to-bool($value) {
+    @return private.to-bool($value);
+}
+
+/// 
+/// Alias function of `meta.to-bool`.
+/// 
+/// @param  {*}         $value  - Value to cast.
+/// @return {Boolean}   - Return boolean value.
+/// 
+/// @group  api
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  private.to-bool
+/// 
+@function bool($value) {
+    @return private.to-bool($value);
+}
