@@ -1,0 +1,38 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/meta";
+
+
+/// 
+/// Returns whether a mixin named `$name` exists.
+/// 
+/// @param  {String}    $name           - A string representing the name of the mixin you want to check for existence. This name should be the mixin's name as defined using the `@mixin` at-rule, without the `@` symbol or any arguments.
+/// @param  {String}    $module [null]  - An optional parameter is a string that specifies the namespace of a specific module where the mixin might be defined.
+/// @return {Boolean}   - Returns `true` if the mixin exists, `false` otherwise.
+/// 
+/// @group  alapnian-sass-meta
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  meta.mixin-exists
+/// 
+@function mixin-exists($name, $module: null) {
+    @return meta.mixin-exists($name, $module);
+}
