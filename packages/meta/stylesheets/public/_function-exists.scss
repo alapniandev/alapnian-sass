@@ -1,0 +1,79 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/map";
+@use "../../helpers/throw";
+@use "../private/keywords";
+@use "../private/type-of";
+@use "../private/to-bool";
+@use "../private/function-exists" as private;
+@use "../settings";
+
+
+/// 
+/// Returns whether a function named $name is defined, either as a built-in function or a user-defined function.
+/// 
+/// @param  {String}    $name                       - A string representing the name of the function you want to check for. Do not include the `$` or `@` symbols.
+/// @param  {String}    $module [null]              - An optional string matching the namespace of a @use rule in the current file. If `null` (default), it checks for a function without a namespace in the current scope. 
+/// @param  {Boolean}   $strict-mode [%derived%]    - Optionally catch errors and return them as values without stopping compilation.
+/// @param  {*}         $default-value [null]       - Default return value when running in non-strict mode.
+/// @return {Boolean}   - Return true if function is exists.
+/// 
+/// @group  api
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Boolean}   settings.$strict-mode
+/// @require    {Function}  map.has-key
+/// @require    {Function}  map.get
+/// @require    {Function}  throw.parameter-type
+/// @require    {Function}  keywords.keywords
+/// @require    {Function}  type-of.type-of
+/// @require    {Function}  to-bool.to-bool
+/// @require    {Function}  private.function-exists
+/// 
+@function function-exists($name, $module...) {
+    $keywords: keywords.keywords($module);
+
+    $catch: settings.$strict-mode;
+    @if (map.has-key($keywords, "strict-mode")) {
+        $_catch: map.get($keywords, "strict-mode");
+        @if (type-of.type-of($_catch) == "bool") {
+            $catch: $_catch;
+        }
+    }
+
+    @if (type-of.type-of($name) != "string") {
+        @if (map.has-key($keywords, "default-value")) {
+            @return to-bool.to-bool(map.get($keywords, "default-value"));
+        } @else {
+            @return throw.parameter-type("function-exists", "name", $name, "string", $strict-mode: $catch);
+        }
+    }
+
+    @if (type-of.type-of($module) != "null" or type-of.type-of($module) != "string") {
+        @if (map.has-key($keywords, "default-value")) {
+            @return to-bool.to-bool(map.get($keywords, "default-value"));
+        } @else {
+            @return throw.parameter-type("function-exists", "module", $module, "null", "string", $strict-mode: $catch);
+        }
+    }
+
+    @return private.function-exists($name, $module);
+}

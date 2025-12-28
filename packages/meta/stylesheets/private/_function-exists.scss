@@ -1,0 +1,38 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/meta";
+
+
+/// 
+/// Returns whether a function named $name is defined, either as a built-in function or a user-defined function.
+/// 
+/// @param  {String}    $name           - A string representing the name of the function you want to check for. Do not include the `$` or `@` symbols.
+/// @param  {String}    $module [null]  - An optional string matching the namespace of a @use rule in the current file. If `null` (default), it checks for a function without a namespace in the current scope. 
+/// @return {Boolean}   - Return true if function is exists.
+/// 
+/// @group  alapnian-sass-meta
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Function}  meta.function-exists
+/// 
+@function function-exists($name, $module: null) {
+    @return meta.function-exists($name, $module);
+}
