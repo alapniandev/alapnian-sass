@@ -1,0 +1,71 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/map";
+@use "../../helpers/throw";
+@use "../private/keywords";
+@use "../private/type-of";
+@use "../private/to-string";
+@use "../private/call" as private;
+@use "../settings";
+
+
+/// 
+/// Dynamically invoke a function value with a provided list of arguments. This is a powerful feature for creating flexible and extensible Sass libraries.
+/// 
+/// @param  {Function}      $function                   - A function value, typically obtained using `meta.get-function()`.
+/// @param  {ArgList}       $args                       - An optional argument list (`$args...`) containing the values to be passed to the `$function`.
+/// @param  {Boolean}       $strict-mode [%derived%]    - Optionally catch errors and return them as values without stopping compilation.
+/// @param  {*}             $default-value [null]       - Default return value when running in non-strict mode.
+/// @return {Function | *}  - The given function is returned when no arguments are given; otherwise, supplied with the given arguments, the value returned by the invocation of the given function is returned.
+/// 
+/// @group  api
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Boolean}   settings.$strict-mode
+/// @require    {Function}  map.has-key
+/// @require    {Function}  map.get
+/// @require    {Function}  throw.parameter-type
+/// @require    {Function}  keywords.keywords
+/// @require    {Function}  type-of.type-of
+/// @require    {Function}  to-string.to-string
+/// @require    {Function}  private.call
+/// 
+@function call($function, $args...) {
+    $keywords: keywords.keywords($args);
+
+    $catch: settings.$strict-mode;
+    @if (map.has-key($keywords, "strict-mode")) {
+        $_catch: map.get($keywords, "strict-mode");
+        @if (type-of.type-of($_catch) == "bool") {
+            $catch: $_catch;
+        }
+    }
+
+    @if (type-of.type-of($function) != "function") {
+        @if (map.has-key($keywords, "default-value")) {
+            @return map.get($keywords, "default-value");
+        } @else {
+            @return throw.parameter-type("call", "function", $function, "function", $strict-mode: $catch, $message: "Use the `meta.get-function("#{to-string.to-string($mixin)}")` or `get-function("#{to-string.to-string($mixin)}")` function.");
+        }
+    }
+
+    @return private.call($function, $args...);
+}
