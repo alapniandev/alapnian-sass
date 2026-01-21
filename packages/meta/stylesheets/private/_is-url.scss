@@ -1,0 +1,53 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/meta";
+@use "../../helpers/string";
+@use "has-url-function";
+
+
+///
+/// Checks if a string is an url.
+///
+/// @param  {String}    $value - The value to check.
+/// @return {Boolean}   - Return `true`if is an url.
+/// 
+/// @group  alapnian-sass-meta
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @requires {function} meta.type-of
+/// @requires {function} string.slice
+/// @requires {function} string.length
+/// @requires {function} string.starts-with
+/// @requires {function} has-url-function.has-url-function
+/// 
+@function is-url($value) {
+    @if (meta.type-of($value) == "string") {
+        $v: $value;
+        
+        @if (has-url-function.has-url-function($value)) {
+            $v: string.slice($value, 6, string.length($value) - 2);
+        }
+        
+        @return string.starts-with($v, '../') or string.starts-with($v, '/') or string.starts-with($v, 'http') or string.starts-with($v, 'data:');
+    }
+
+    @return false;
+}
