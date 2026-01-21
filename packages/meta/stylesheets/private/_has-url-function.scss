@@ -1,0 +1,44 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/meta";
+@use "../../helpers/string";
+
+
+///
+/// Checks if a string is an url function string.
+///
+/// @param  {String}    $url - The value to check.
+/// @return {Boolean}   - Return `true` if the url value has the url function inside.
+/// 
+/// @group  alapnian-sass-meta
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @requires {function} meta.type-of
+/// @requires {function} string.starts-with
+/// @requires {function} string.ends-with
+/// 
+@function has-url-function($url) {
+  @if (meta.type-of($url) == "string") {
+    @return string.starts-with($url, 'url("') and string.ends-with($url, '")');
+  }
+  
+  @return false;
+}

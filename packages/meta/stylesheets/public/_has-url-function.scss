@@ -1,0 +1,70 @@
+////////////////////////////////////////////////////////////////////
+///                                                              ///
+///               ▄▀█ █░░ ▄▀█ █▀█ █▄░█ █ ▄▀█ █▄░█                ///
+///               █▀█ █▄▄ █▀█ █▀▀ █░▀█ █ █▀█ █░▀█                ///
+///                                                              ///
+///           This file is part of alapnian sass meta.           ///
+///                                                              ///
+///      Copyright (c) 2025 Alapnian <support@alapnian.com>      ///
+///                                                              ///
+/// For the full copyright and license information, please view  ///
+/// the LICENSE file that was distributed with this source code. ///
+////////////////////////////////////////////////////////////////////
+
+// Set the character encoding of the stylesheet.
+@charset "UTF-8";
+
+
+// Load Modules
+@use "../../helpers/throw";
+@use "../../helpers/map";
+@use "../private/keywords";
+@use "../private/type-of";
+@use "../private/to-bool";
+@use "../private/has-url-function" as private;
+@use "../settings";
+
+
+/// 
+/// Checks if a string is an url function string.
+///
+/// @param  {String}    $url                        - The value to check.
+/// @param  {Boolean}   $strict-mode [%derived%]    - Optionally catch errors and return them as values without stopping compilation.
+/// @param  {*}         $default-value [null]       - Default return value when running in non-strict mode.
+/// @return {Boolean}   - Return `true` if the url value has the url function inside.
+/// 
+/// @group  api
+/// @access public
+/// @since  0.0.0
+/// @author Alapnian Sass Dev <sassdev@alapnian.com>
+/// 
+/// @require    {Boolean}   settings.$strict-mode
+/// @require    {Function}  map.has-key
+/// @require    {Function}  map.get
+/// @require    {Function}  throw.parameter-type
+/// @require    {Function}  keywords.keywords
+/// @require    {Function}  type-of.type-of
+/// @require    {Function}  to-bool.to-bool
+/// @require    {Function}  private.has-url-function
+/// 
+@function has-url-function($url) {
+    $keywords: keywords.keywords($module);
+
+    $catch: settings.$strict-mode;
+    @if (map.has-key($keywords, "strict-mode")) {
+        $_catch: map.get($keywords, "strict-mode");
+        @if (type-of.type-of($_catch) == "bool") {
+            $catch: $_catch;
+        }
+    }
+
+    @if (type-of.type-of($url) != "string") {
+        @if (map.has-key($keywords, "default-value")) {
+            @return to-bool.to-bool(map.get($keywords, "default-value"));
+        } @else {
+            @return throw.parameter-type("has-url-function", "url", $url, "string", $strict-mode: $catch);
+        }
+    }
+
+    @return private.has-url-function($url);
+}
