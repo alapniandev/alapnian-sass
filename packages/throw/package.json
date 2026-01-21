@@ -1,6 +1,6 @@
 {
   "name": "@alapnian-sass/throw",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "displayName": "Alapnian Sass Throw Module",
   "description": "Provides Sass functions to standardize exception messages.",
   "keywords": [
