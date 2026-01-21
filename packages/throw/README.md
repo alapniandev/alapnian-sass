@@ -79,27 +79,30 @@ sass.compile(filePath, {
             <td><code>$strict-mode</code></td>
             <td>Boolean</td>
             <td><code>true</code></td>
-            <td>Description</td>
+            <td>Toggle strict mode, in which script will throw when not able to cast a value into a certain type (mostly color and number). In non-strict mode, it will return the default value from the given type.</td>
         </tr>
     </tbody>
 </table>
 
 <p>
-Customize settings via <a target="_blank" href=""><code>@forward</code> rule</a>:
+<details>
+    <summary>Customize settings via <a target="_blank" href="https://sass-lang.com/documentation/at-rules/forward/"><code>@forward</code> rule</a></summary>
 
 ```scss
 @forward "@alapnian-sass/throw" with (
     $strict-mode: false
 );
 ```
-
-Customize settings via <a><code>@use</code> rule</a>:
+</details>
+<details>
+    <summary>Customize settings via <a target="_blank" href="https://sass-lang.com/documentation/at-rules/use/"><code>@use</code> rule</a></summary>
 
 ```scss
 @use "@alapnian-sass/throw" with (
     $strict-mode: false
 );
 ```
+</details>
 </p>
 
 <picture>
