@@ -2,7 +2,24 @@
 
 <p>All notable changes to this project will be documented in this file.</p>
 
-<h2>[<a href="https://github.com/alapniandev/alapnian-sass/releases/tag/v0.0.0">0.0.0</a>] Unreleased</h2>
+<h2>[<a href="https://registry.npmjs.org/@alapnian-sass/throw/-/throw-0.0.1.tgz">0.0.1</a>] - 2026-01-21</h2>
+
+<h3>➕ Added</h3>
+<p>
+    <ul>
+        <li>Create <code>.gitignore</code> and <code>.npmignore</code> file ─ by <a href="https://github.com/dyowiranatamulya">@dyowiranatamulya</a> in <a href="https://github.com/alapniandev/alapnian-sass/commit/bd48972ea47fedbe6e58fa591b83efa5e14718ef"><code>bd48972</code></a>.</li>
+    </ul>
+</p>
+
+<h3>🔄 Update</h3>
+<p>
+    <ul>
+        <li>Fixed an error when taking parameters to get keywords from arguments for <a href="https://github.com/alapniandev/alapnian-sass/issues/1">#1</a> issue ─ by <a href="https://github.com/dyowiranatamulya">@dyowiranatamulya</a> in <a href="https://github.com/alapniandev/alapnian-sass/commit/3b281dc2714f7f95163d2c90901090642c01ea66"><code>3b281dc</code></a>.</li>
+        <li>Update <code>README.md</code> ─ by <a href="https://github.com/dyowiranatamulya">@dyowiranatamulya</a> in <a href="https://github.com/alapniandev/alapnian-sass/commit/9d64b1b2e6751954a56a8563cf39243152e5cb61"><code>9d64b1b</code></a>.</li>
+    </ul>
+</p>
+
+<h2>[<a href="https://registry.npmjs.org/@alapnian-sass/throw/-/throw-0.0.0.tgz">0.0.0</a>] - 2025-12-26</h2>
 
 <h3>➕ Added</h3>
 <p>
